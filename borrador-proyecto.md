@@ -53,6 +53,7 @@ Para mi semana:
         * Corregir las funciones incluyendo el código del notebook de convertir en datetime
         * Incluir en los tests que dan resultado con campos que puedes ser datetime las pruebas para verificarlo (ejemplo: test_get_observations_by_id_returns_observations_data())
         * Asegurarse de que todos los tests pasan.
+        
     * Unificar las funciones: 1-2 funciones en lugar de 40 para cada modelo
     * Crear objetos específicos para observaciones, places,...
     * Paquetito para que se pueda instalar y subirlo a pypi.

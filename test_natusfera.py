@@ -1,33 +1,35 @@
 #!/usr/bin/env python3
 
+from numpy import datetime64
 import requests
 import json
 import datetime
+import pytest
 from .natusfera import (
     get_project_from_id,
     get_obs_from_query,
     get_obs_from_id,
     get_obs_from_user,  
-    get_obs_project,
+    get_obs_from_project,
 )
 
 API_URL = "https://natusfera.gbif.es"
 
 
-def test_get_get_project_from_id_extract_observation_data(requests_mock):
-
-    json_resultado = '''
-    {
-        "description": "Observaci\u00f3n de la biodiversidad que se encuentra en el ecosistema del r\u00edo Arga",
-        "id": 806,
-        "title": "Proyecto r\u00edo Arga-Arga ibaiko proiektua",
-    }
-    '''
-    requests_mock.get("https://natusfera.gbif.es/projects/806.json", text=json_resultado)
+def test_get_project_from_id_extract_observation_data(requests_mock):
+    requests_mock.get(
+        f'{API_URL}/projects/806.json',
+        json = {
+            'title': 'titulo',
+            'id': 806,
+            'taxon': 'Fungi',
+        }
+    )
 
     result = get_project_from_id(806)
 
-    assert result == json.loads(json_resultado)
+    assert result['id'] == 806
+    assert result['taxon'] == 'Fungi'
 
     # assert result['id'] == 806
 
@@ -35,7 +37,10 @@ def test_get_get_project_from_id_extract_observation_data(requests_mock):
 def test_get_obs_from_query_returns_observations_data_when_less_than_pagination(requests_mock):
     requests_mock.get(
         f'{API_URL}/observations.json?q="quercus quercus"&per_page=200&page=1',
-        json=[{"id": id, "taxon_id": 3} for id in range(100)],
+        json=[{
+            "id": id, 
+            "taxon_id": 3, 
+            "created_at": "2021-03-15"} for id in range(100)],
     )
     requests_mock.get(
         f'{API_URL}/observations.json?q="quercus quercus"&per_page=200&page=100',
@@ -47,11 +52,11 @@ def test_get_obs_from_query_returns_observations_data_when_less_than_pagination(
     assert len(result) == 100
     assert result[0]["id"] == 0
     assert result[0]["taxon_id"] == 3
-
-
+    assert type(result[0]["created_at"]) == datetime.datetime
+    
 def test_get_observations_returns_observations_data_when_more_than_pagination(
     requests_mock,
-) -> None:
+    ) -> None:
     requests_mock.get(
         f'{API_URL}/observations.json?q="quercus quercus"&per_page=200&page=1',
         json=[{"id": id_, "taxon_id": 3} for id_ in range(200)],
@@ -65,7 +70,6 @@ def test_get_observations_returns_observations_data_when_more_than_pagination(
         json=[],
     )
 
-
     result = get_obs_from_query("quercus quercus")
 
     assert len(result) == 250
@@ -73,11 +77,9 @@ def test_get_observations_returns_observations_data_when_more_than_pagination(
     assert result[0]["taxon_id"] == 3
 
 
-import pytest
-
 def test_get_observations_returns_error_when_more_than_20000_results(
     requests_mock,
-) -> None:
+    ) -> None:
     """The API will return an error."""
     for page in range(1, 101):
         requests_mock.get(
@@ -101,7 +103,7 @@ def test_get_observations_returns_error_when_more_than_20000_results(
 
 def test_get_observations_by_id_returns_observations_data(
     requests_mock,
-) -> None:
+    ) -> None:
     requests_mock.get(
         f"{API_URL}/observations/2084.json",
         json={
@@ -121,9 +123,10 @@ def test_get_observations_by_id_returns_observations_data(
     assert result['observed_on'] == datetime.datetime(2016, 5, 1, 0, 0)
     assert result['updated_at'] == datetime.datetime(2021, 3, 15, 1, 19, 22, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=50400)))
 
+
 def test_get_obs_from_user_returns_observations_data(
     requests_mock,
-) -> None:
+    ) -> None:
     requests_mock.get(
         f"{API_URL}/observations/zolople.json?per_page=200&page=1",
         json=[
@@ -147,8 +150,8 @@ def test_get_obs_from_user_returns_observations_data(
     assert result[0]["id"] == 2084
     assert result[0]["taxon_id"] == 3
 
-def test_get_obs_project_returns_observations_data(requests_mock,
-) -> None:
+
+def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
     requests_mock.get(
         f"{API_URL}/observations/project/806.json?per_page=200&page=1",
         json=[
@@ -156,6 +159,6 @@ def test_get_obs_project_returns_observations_data(requests_mock,
             "id": 2084, 
             "taxon_id": 3} for id_ in range(37)],
     )
-    result = get_obs_project(806)
+    result = get_obs_from_project(806)
     
     assert len(result) == 37
