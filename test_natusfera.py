@@ -11,6 +11,7 @@ from .natusfera import (
     get_obs_from_id,
     get_obs_from_user,  
     get_obs_from_project,
+    get_project_from_name,
 )
 
 API_URL = "https://natusfera.gbif.es"
@@ -162,3 +163,27 @@ def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
     result = get_obs_from_project(806)
     
     assert len(result) == 37
+
+def test_get_project_from_name_returns_observations_data(requests_mock,) -> None:
+    requests_mock.get(
+        "https://natusfera.gbif.es/projects/search.json?q=urbamar",
+        json=[{
+            'id': 1191,
+            'latitude': '41.403373',
+            'longitude': '2.216873',
+            'updated_at': '2020-09-26T05:07:36-10:00',
+            'place_id': None,
+            'title': 'URBAMAR',
+        }]
+    )
+
+    result = get_project_from_name()
+
+    assert result[0]['id'] == 1191
+    assert len(result) == 1
+    assert type(result[0]['updated_at']) == datetime.datetime
+
+# test_get_obs_from_taxon_returns_info_with_pagination()
+# test_get_ids_from_place_returns_list_ids()
+# test_get_obs_from_place_name_returns_obs_from_ids()
+# test_get_obs_from_place_id_returns_obs()

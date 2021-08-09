@@ -119,8 +119,17 @@ def get_project_from_name(name:str) -> dict:
     """Download information of projects from name"""  
     
     url = f"https://natusfera.gbif.es/projects/search.json?q={name}"
-    page = requests.get(url)
+    page = requests.get(url, verify=False)
     
+    resultado = page.json()
+    campos = ["created_at", "observed_on", "updated_at"]
+    for campo in campos:
+        try:
+            if type(resultado[campo]) != datetime.datetime:
+                resultado[campo] = datetime.datetime.fromisoformat(observation[campo])
+        except KeyError:
+            pass
+
     return page.json()
 
 def get_obs_from_taxon(taxon:str) -> list:

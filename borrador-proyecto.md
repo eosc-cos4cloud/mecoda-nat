@@ -43,15 +43,15 @@ x Apuntar los errores que se detectan en la API y notificarlos.
 Para mi semana:
 - Crear la librería de Python:
     * Definir todas las funciones devolviendo los datos según los da la API.
-        * Observaciones por taxonomía
-        * Observaciones por lugar
+        x Observaciones por taxonomía
+        x Observaciones por lugar
             * buscador lugar(str) -> [{place_name, place_id, place_type_name}]
             * buscador obs(place_id) -> [observaciones]
-    * Poner información de tipos a las funciones (como en licitaciones)
+    x Poner información de tipos a las funciones (como en licitaciones)
     
     * Devolver objetos datetime en lugar de las fechas en formato string.
-        * Corregir las funciones incluyendo el código del notebook de convertir en datetime
-        * Incluir en los tests que dan resultado con campos que puedes ser datetime las pruebas para verificarlo (ejemplo: test_get_observations_by_id_returns_observations_data())
+        x Corregir las funciones incluyendo el código del notebook de convertir en datetime
+        x Incluir en los tests que dan resultado con campos que puedes ser datetime las pruebas para verificarlo (ejemplo: test_get_observations_by_id_returns_observations_data())
         * Asegurarse de que todos los tests pasan.
         
     * Unificar las funciones: 1-2 funciones en lugar de 40 para cada modelo
