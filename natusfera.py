@@ -126,11 +126,11 @@ def get_project_from_name(name:str) -> dict:
     for campo in campos:
         try:
             if type(resultado[campo]) != datetime.datetime:
-                resultado[campo] = datetime.datetime.fromisoformat(observation[campo])
+                resultado[campo] = datetime.datetime.fromisoformat(resultado[campo])
         except KeyError:
             pass
 
-    return page.json()
+    return resultado
 
 def get_obs_from_taxon(taxon:str) -> list:
     taxon_names = [
@@ -152,8 +152,8 @@ def get_obs_from_taxon(taxon:str) -> list:
 
     if taxon in taxon_names:
         observations = []
-        url = f"{API_URL}/observations.json?iconic_taxa={taxon}&per_page=200&page={n}"
         n = 1
+        url = f"{API_URL}/observations.json?iconic_taxa={taxon}&per_page=200&page={n}"
         page = requests.get(url, verify=False)
 
         while len(page.json()) == 200:

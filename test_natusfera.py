@@ -12,6 +12,9 @@ from .natusfera import (
     get_obs_from_user,  
     get_obs_from_project,
     get_project_from_name,
+    get_obs_from_taxon,
+    get_ids_from_place,
+    get_obs_from_place_id,
 )
 
 API_URL = "https://natusfera.gbif.es"
@@ -167,23 +170,115 @@ def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
 def test_get_project_from_name_returns_observations_data(requests_mock,) -> None:
     requests_mock.get(
         "https://natusfera.gbif.es/projects/search.json?q=urbamar",
-        json=[{
+        json={
             'id': 1191,
             'latitude': '41.403373',
             'longitude': '2.216873',
-            'updated_at': '2020-09-26T05:07:36-10:00',
+            'updated_at': '2020-09-26',
             'place_id': None,
             'title': 'URBAMAR',
-        }]
+        }
     )
 
-    result = get_project_from_name()
+    result = get_project_from_name('urbamar')
 
-    assert result[0]['id'] == 1191
-    assert len(result) == 1
+    assert result['id'] == 1191
+    assert len(result) == 6
+    assert type(result['updated_at']) == datetime.datetime
+
+def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None:
+    requests_mock.get(
+        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200&page=1",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
+            ]
+    )
+    requests_mock.get(
+        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200&page=2",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
+        ]
+    )
+    requests_mock.get(
+        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200&page=3",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(56)
+        ]
+    )
+    result = get_obs_from_taxon('Fungi')
+
+    assert len(result) == 456
     assert type(result[0]['updated_at']) == datetime.datetime
 
-# test_get_obs_from_taxon_returns_info_with_pagination()
-# test_get_ids_from_place_returns_list_ids()
-# test_get_obs_from_place_name_returns_obs_from_ids()
-# test_get_obs_from_place_id_returns_obs()
+
+def test_get_ids_from_place_returns_list_ids(requests_mock,) -> None:
+    requests_mock.get(
+        f"{API_URL}/places.json?q=Barcelona",
+        json=[{'display_name': 'Barcelona, Catalonia, ES',
+                'id': 20, 
+                'name': 'Barcelona'},
+            {'display_name': 'Barcelona, Catalonia, ES',
+                'id': 66,
+                'name': 'Barcelona'},
+            {'display_name': 'Barcelona, Catalonia, ES',
+                'id': 67,
+                'name': 'Barcelona'},
+            {'display_name': 'Barcelona, Catalonia, ES',
+            'id': 1011,
+            'name': 'Barcelona'},
+            {'display_name': 'Barcelona, Catalonia, ES',
+            'id': 424,
+            'name': 'Barcelona'},
+            {'display_name': 'Barcelona, Catalonia, ES',
+            'id': 425,
+            'name': 'Barcelona'}]
+            )
+    result = get_ids_from_place("Barcelona")
+    
+    assert len(result) == 6
+    assert type(result) == list
+    assert 424 in result
+
+def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=1011&per_page=200&page=1",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
+            ]
+    )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=1011&per_page=200&page=2",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
+        ]
+    )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=1011&per_page=200&page=3",
+        json=[{
+            "taxon": "Fungi", 
+            "id": 1645, 
+            "taxon_id": 3,
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(56)
+        ]
+    )
+    result = get_obs_from_place_id(1011)
+    assert len(result) == 456
+    assert type(result[0]['updated_at']) == datetime.datetime
+
+# def test_get_obs_from_place_name_returns_obs_from_ids(requests_mock,) -> None:
+    #requests_mock.get()
