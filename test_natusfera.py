@@ -15,6 +15,7 @@ from .natusfera import (
     get_obs_from_taxon,
     get_ids_from_place,
     get_obs_from_place_id,
+    get_obs_from_place_name
 )
 
 API_URL = "https://natusfera.gbif.es"
@@ -280,5 +281,43 @@ def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
     assert len(result) == 456
     assert type(result[0]['updated_at']) == datetime.datetime
 
-# def test_get_obs_from_place_name_returns_obs_from_ids(requests_mock,) -> None:
-    #requests_mock.get()
+def test_get_obs_from_place_name_returns_obs(requests_mock,) -> None:
+    
+    requests_mock.get(
+        f"{API_URL}/places.json?q=Barcelona",
+        json=[{'id': 20}, {'id': 67}, {'id': 1024}]
+        )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=20&per_page=200&page=1",
+        json=[{
+            "id": id_, 
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)]
+        )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=20&per_page=200&page=2",
+        json=[{
+            "id": id_, 
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(56)]
+        )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=67&per_page=200&page=1",
+        json=[]
+        )
+    requests_mock.get(
+        f"{API_URL}/observations.json?place_id=1024&per_page=200&page=1",
+        json=[{
+            "id": id_, 
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(5)]
+        )
+    #requests_mock de cada id -> 0, 5, 250 observaciones
+
+    result = get_obs_from_place_name("Barcelona")
+    
+    assert len(result) > 200
+
+    place_ids = []
+    for observation in result:
+        place_ids.append(observation['place_id'])
+    assert len(place_ids) > 1
+
+    assert type(result[0]['updated_at']) == datetime.datetime

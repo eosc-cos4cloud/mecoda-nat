@@ -93,13 +93,13 @@ def get_obs_from_project(id:int) -> list:
     """Download observations or info from a project"""
     observations = []
     n = 1
-    url = f"https://natusfera.gbif.es/observations/project/{id}.json?per_page=200&page={n}"
+    url = f"{API_URL}/observations/project/{id}.json?per_page=200&page={n}"
     page = requests.get(url)
 
     while len(page.json()) == 200:
         observations.extend(page.json())
         n += 1
-        url = f"https://natusfera.gbif.es/observations/project/{id}.json?per_page=200&page={n}"
+        url = f"{API_URL}/observations/project/{id}.json?per_page=200&page={n}"
         page = requests.get(url)
     
     observations.extend(page.json())
@@ -118,7 +118,7 @@ def get_obs_from_project(id:int) -> list:
 def get_project_from_name(name:str) -> dict:
     """Download information of projects from name"""  
     
-    url = f"https://natusfera.gbif.es/projects/search.json?q={name}"
+    url = f"{API_URL}/projects/search.json?q={name}"
     page = requests.get(url, verify=False)
     
     resultado = page.json()
@@ -189,10 +189,14 @@ def get_ids_from_place(place:str) -> list:
     return place_ids
 
 def get_obs_from_place_name(place:str) -> list:
+    
     place_ids = get_ids_from_place(place)
-    n = 1
+    
+    #__import__("pdb").set_trace()
+    
     observations = []
     for place_id in place_ids:
+        n = 1
         url = f"{API_URL}/observations.json?place_id={place_id}&per_page=200&page={n}"
         page = requests.get(url, verify=False)
         if len(page.json()) > 0:
@@ -204,20 +208,17 @@ def get_obs_from_place_name(place:str) -> list:
 
             observations.extend(page.json())
 
-            campos = ["created_at", "observed_on", "updated_at"]
+    campos = ["created_at", "observed_on", "updated_at"]
         
-            for observation in observations:
-                for campo in campos:
-                    try:
-                        if type(observation[campo]) != datetime.datetime:
-                            observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-                    except KeyError:
-                        pass
-        else:
-            print("No existen observaciones para este nombre de lugar")
-    
-
-
+    for observation in observations:
+        for campo in campos:
+            try:
+                if type(observation[campo]) != datetime.datetime:
+                    observation[campo] = datetime.datetime.fromisoformat(observation[campo])
+            except KeyError:
+                pass
+        observation['place_id'] = place_id
+        
     return observations
     
 def get_obs_from_place_id(place_id:int) -> list:
@@ -249,6 +250,5 @@ def get_obs_from_place_id(place_id:int) -> list:
         print("No existen observaciones para este id de lugar")
     
     return observations
-
 
 #get_inat_obs_project(): Download observations or info from a project
