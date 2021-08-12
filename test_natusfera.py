@@ -309,7 +309,7 @@ def test_get_obs_from_place_name_returns_obs(requests_mock,) -> None:
             "id": id_, 
             'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(5)]
         )
-    #requests_mock de cada id -> 0, 5, 250 observaciones
+    
 
     result = get_obs_from_place_name("Barcelona")
     

@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-from typing import List
+from typing import List, Union
 import requests
 from bs4 import BeautifulSoup
 import datetime
 
 API_URL = "https://natusfera.gbif.es"
 
-def get_project(p: str or int) -> dict:
+def get_project(p: Union[str, int]) -> dict:
     """Download information of a project from id or name"""  
 
     if type(p) is int:
@@ -26,3 +26,7 @@ def get_project(p: str or int) -> dict:
             pass
 
     return resultado
+
+# def get_obs(query: Optional[str] = None, id: int)
+# observations(query="quercus quercus")
+

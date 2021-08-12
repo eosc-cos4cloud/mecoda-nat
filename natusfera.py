@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from typing import List
+from typing import List, Union
 import requests
 from bs4 import BeautifulSoup
 import datetime
@@ -11,6 +11,27 @@ def get_project_from_id(id:int) -> dict:
     page = requests.get(url, verify=False)
     
     return page.json()
+
+def convert_to_datetime(observations: Union[dict, list]) -> list:
+    campos = ["created_at", "observed_on", "updated_at"]
+    
+    if type(observations) is dict:
+        for campo in campos:
+            try:
+                if type(observations[campo]) != datetime.datetime:
+                    observations[campo] = datetime.datetime.fromisoformat(observations[campo])
+            except KeyError:
+                pass
+    elif type(observations) is list:
+        for observation in observations:
+            for campo in campos:
+                try:
+                    if type(observation[campo]) != datetime.datetime:
+                        observation[campo] = datetime.datetime.fromisoformat(observation[campo])
+                except KeyError:
+                    pass
+    return observations
+
 
 def get_obs_from_query(query:str) -> list:
     observations = []
@@ -30,33 +51,17 @@ def get_obs_from_query(query:str) -> list:
             
     #__import__("pdb").set_trace()
     
-    campos = ["created_at", "observed_on", "updated_at"]
+    observations = convert_to_datetime(observations)
 
-    for observation in observations:
-        for campo in campos:
-            try:
-                if type(observation[campo]) != datetime.datetime:
-                    observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-            except KeyError:
-                pass
     return observations
 
-def get_obs_from_id(id:int) -> list:
+def get_obs_from_id(id:int) -> dict:
     """Get information on a specific observation given an id"""
 
     url = f'{API_URL}/observations/{id}.json'
     page = requests.get(url)
     
-    observation = page.json()
-
-    campos = ["created_at", "observed_on", "updated_at"]
-
-    for campo in campos:
-        try:
-            if type(observation[campo]) != datetime.datetime:
-                observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-        except KeyError:
-            pass
+    observation = convert_to_datetime(page.json())
 
     return observation
 
@@ -74,16 +79,8 @@ def get_obs_from_user(user:str) -> list:
         page = requests.get(url)
         
     observations.extend(page.json())
-    
-    campos = ["created_at", "observed_on", "updated_at"]
 
-    for observation in observations:
-        for campo in campos:
-            try:
-                if type(observation[campo]) != datetime.datetime:
-                    observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-            except KeyError:
-                pass
+    observations = convert_to_datetime(observations)
 
     #__import__("pdb").set_trace()
 
@@ -104,15 +101,8 @@ def get_obs_from_project(id:int) -> list:
     
     observations.extend(page.json())
 
-    campos = ["created_at", "observed_on", "updated_at"]
+    observations = convert_to_datetime(observations)
 
-    for observation in observations:
-        for campo in campos:
-            try:
-                if type(observation[campo]) != datetime.datetime:
-                    observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-            except KeyError:
-                pass
     return observations
 
 def get_project_from_name(name:str) -> dict:
@@ -121,14 +111,7 @@ def get_project_from_name(name:str) -> dict:
     url = f"{API_URL}/projects/search.json?q={name}"
     page = requests.get(url, verify=False)
     
-    resultado = page.json()
-    campos = ["created_at", "observed_on", "updated_at"]
-    for campo in campos:
-        try:
-            if type(resultado[campo]) != datetime.datetime:
-                resultado[campo] = datetime.datetime.fromisoformat(resultado[campo])
-        except KeyError:
-            pass
+    resultado = convert_to_datetime(page.json())
 
     return resultado
 
@@ -164,15 +147,8 @@ def get_obs_from_taxon(taxon:str) -> list:
 
         observations.extend(page.json())
         
-        campos = ["created_at", "observed_on", "updated_at"]
+        observations = convert_to_datetime(observations)
         
-        for observation in observations:
-            for campo in campos:
-                try:
-                    if type(observation[campo]) != datetime.datetime:
-                        observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-                except KeyError:
-                    pass
         return observations
 
     else:
@@ -208,15 +184,9 @@ def get_obs_from_place_name(place:str) -> list:
 
             observations.extend(page.json())
 
-    campos = ["created_at", "observed_on", "updated_at"]
-        
+    observations = convert_to_datetime(observations)
+
     for observation in observations:
-        for campo in campos:
-            try:
-                if type(observation[campo]) != datetime.datetime:
-                    observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-            except KeyError:
-                pass
         observation['place_id'] = place_id
         
     return observations
@@ -236,16 +206,8 @@ def get_obs_from_place_id(place_id:int) -> list:
             page = requests.get(url, verify=False)
 
         observations.extend(page.json())
+        observations = convert_to_datetime(observations)    
 
-        campos = ["created_at", "observed_on", "updated_at"]
-        
-        for observation in observations:
-            for campo in campos:
-                try:
-                    if type(observation[campo]) != datetime.datetime:
-                        observation[campo] = datetime.datetime.fromisoformat(observation[campo])
-                except KeyError:
-                    pass
     else:
         print("No existen observaciones para este id de lugar")
     
