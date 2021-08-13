@@ -55,18 +55,19 @@ Para mi semana:
         * Asegurarse de que todos los tests pasan.
         
     * Unificar las funciones: 1-2 funciones en lugar de 40 para cada modelo
-        * Archivar código anterior + cambiar nombre a test_natusfera para que pase el pytest
-        * Hacer testes para las funciones unificadas
-            * modificar los test existentes para que usen las nuevas funciones
-            * test para nombre de place_name que no devuelve nada
-            * test de uso de la función con taxon en minúsculas
-            * test de usos combinados
+        x Archivar código anterior + cambiar nombre a test_natusfera para que pase el pytest
+        x Hacer testes para las funciones unificadas
+            x modificar los test existentes para que usen las nuevas funciones
+            x test para nombre de place_name que no devuelve nada
+            x test de uso de la función con taxon en minúsculas
+            x test de usos combinados
 
-        * Hacer el commit
-
-
+        x Hacer el commit
 
     * Crear objetos específicos para observaciones, places,...
+
     * Escribir documentación
+    
     * Paquetito para que se pueda instalar y subirlo a pypi.
+    
     * Crear validaciones de los argumentos de entrada para evitar valores que la API no acepta.

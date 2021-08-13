@@ -313,30 +313,13 @@ def test_get_obs_from_taxon_min_returns_info(requests_mock,) -> None:
             "taxon": "Fungi", 
             "id": 1645, 
             "taxon_id": 3,
-            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
+            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(57)
             ]
     )
-    requests_mock.get(
-        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200&page=2",
-        json=[{
-            "taxon": "Fungi", 
-            "id": 1645, 
-            "taxon_id": 3,
-            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(200)
-        ]
-    )
-    requests_mock.get(
-        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200&page=3",
-        json=[{
-            "taxon": "Fungi", 
-            "id": 1645, 
-            "taxon_id": 3,
-            'updated_at': '2020-09-26T05:07:36-10:00',} for id_ in range(56)
-        ]
-    )
+
     result = get_obs(taxon='fungi')
 
-    assert len(result) == 456
+    assert len(result) == 57
     assert type(result[0]['updated_at']) == datetime.datetime
 
 # test de usos combinados
