@@ -75,6 +75,7 @@ def _build_url(
     user: Optional[str] = None,
     taxon: Optional[str] = None,
     place_id: Optional[int] = None,
+    year: Optional[int] = None,
     ) -> str:
 
     # definir la base url
@@ -99,9 +100,11 @@ def _build_url(
             raise ValueError("No es una taxonomía válida")
     if place_id is not None:
         args.append(f"place_id={place_id}")
+    if year is not None:
+        args.append(f"year={year}")
 
-    
     url = f'{base_url}?{"&".join(args)}&per_page=200'
+    #sin parametros devuelve los últimos registros
 
     return url
 
@@ -169,6 +172,7 @@ def get_obs(
     taxon: Optional[str] = None,
     place_id: Optional[int] = None,
     place_name: Optional[str] = None,
+    year: Optional[int] = None,
     ) -> List[Observation]:
 
     if place_name is not None:
@@ -183,6 +187,7 @@ def get_obs(
                 user,
                 taxon,
                 place_id,
+                year,
                 )
             observations.extend(_request(url))
     else:
@@ -193,6 +198,7 @@ def get_obs(
             user,
             taxon,
             place_id,
+            year,
             )
 
         observations = _request(url)

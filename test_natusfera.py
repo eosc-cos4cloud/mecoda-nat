@@ -547,3 +547,18 @@ def test_get_count_by_taxon_returns_info(requests_mock,) -> None:
     assert result['Chromista'] == 1375
 
 
+def test_get_obs_from_year_returns_obs(requests_mock,) -> None:
+    expected_result = [Observation(
+        id=id_,
+        ) for id_ in range(150)
+    ]
+    requests_mock.get(
+        f"{API_URL}/observations.json?year=2018&per_page=200",
+        json=[{
+            "id": id_,} for id_ in range(150)
+            ]
+    )
+    result = get_obs(year=2018)
+    
+    assert result == expected_result
+    assert len(result) == 150
