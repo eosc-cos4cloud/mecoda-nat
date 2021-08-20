@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 from typing import List, Union, Optional
 import requests
-from bs4 import BeautifulSoup
 import datetime
-from typing import Dict, List
+from typing import Dict, List, Any
+from .models import Observation, Project, Taxon, Photo
+from contextlib import suppress
 
 API_URL = "https://natusfera.gbif.es"
 
@@ -46,26 +47,26 @@ def _get_ids_from_place(place:str) -> list:
         place_ids.append(place_id)
     return place_ids
 
-def get_project(p: Union[str, int]) -> Dict:
+def get_project(p: Union[str, int]) -> List[Project]:
     """Download information of a project from id or name"""  
 
     if type(p) is int:
         url = f"{API_URL}/projects/{p}.json"
+        page = requests.get(url, verify=False)
+        
+        if page.status_code == 404:
+            print("ID No encontrado")
+            exit
+        else:
+            resultado = [Project(**page.json())]
+            return resultado
+
     elif type(p) is str:
         url = f"{API_URL}/projects/search.json?q={p}"
+        page = requests.get(url, verify=False)
+        resultado = [Project(**proj) for proj in page.json()]
+        return resultado
 
-    page = requests.get(url, verify=False)
-    resultado = page.json()
-    
-    campos = ["created_at", "observed_on", "updated_at"]
-    for campo in campos:
-        try:
-            if type(resultado[campo]) != datetime.datetime:
-                resultado[campo] = datetime.datetime.fromisoformat(resultado[campo])
-        except KeyError:
-            pass
-
-    return resultado
 
 def _build_url(
     query: Optional[str] = None, 
@@ -104,26 +105,59 @@ def _build_url(
 
     return url
 
-def _request(arg_url: str) -> List:
+def _build_observations(observations_data: List[Dict[str, Any]]) -> Observation:
+    observations = []
+    
+    for data in observations_data:
+        
+        with suppress(KeyError):
+            data["taxon"] = Taxon(
+                id=data['taxon']['id'],
+                name=data['taxon']['name'],
+                iconic_taxon=data['iconic_taxon_id'],
+            )
+        
+        with suppress(KeyError):
+            data["project_ids"] = [proj['project_id'] for proj in data['project_observations']]
+    
+        with suppress(KeyError):
+            data['photos'] = []
+            for observation_photo in data['observation_photos']:
+                data['photos'].append(Photo(
+                    id=observation_photo['id'],
+                    large_url=observation_photo['photo']['large_url'],
+                    medium_url=observation_photo['photo']['medium_url'],
+                    small_url=observation_photo['photo']['small_url'],
+                ))
+
+        with suppress(KeyError):
+            data['iconic_taxon'] = data['iconic_taxon_id']
+        
+
+        observation = Observation(**data)
+
+        observations.append(observation)
+    
+    return observations
+
+def _request(arg_url: str) -> List[Observation]:
     observations = []
     n = 1
     page = requests.get(arg_url)
-    #__import__("pdb").set_trace()
 
     while len(page.json()) == 200:
-        
         n += 1
         if n > 100:
             print("WARNING: Only the first 20,000 results are displayed")
             break
-        observations.extend(page.json())
+        observations.extend(_build_observations(page.json()))
         url = f"{arg_url}&page={n}"
         page = requests.get(url)
     
-    if type(page.json()) == list:
-        observations.extend(page.json())
+    if type(page.json()) is list:
+        observations.extend(_build_observations(page.json()))
     else:
-        observations.append(page.json())
+        observations.extend(_build_observations([page.json()]))
     
     return observations
 
@@ -135,11 +169,12 @@ def get_obs(
     taxon: Optional[str] = None,
     place_id: Optional[int] = None,
     place_name: Optional[str] = None,
-    ) -> List:
+    ) -> List[Observation]:
 
     if place_name is not None:
         place_ids = _get_ids_from_place(place_name)
         observations = []
+        
         for place_id in place_ids:
             url = _build_url(
                 query, 
@@ -162,5 +197,13 @@ def get_obs(
 
         observations = _request(url)
 
-    return _convert_to_datetime(observations)
+    return observations
 
+def get_count_by_taxon() -> Dict:
+    url = "https://natusfera.gbif.es/taxa.json"
+    page = requests.get(url, verify=False)
+    taxa = page.json()
+    count = {}
+    for taxon in taxa:
+        count[taxon['name']] = taxon['observations_count']
+    return count
