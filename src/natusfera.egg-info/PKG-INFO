@@ -1,0 +1,26 @@
+Metadata-Version: 2.1
+Name: natusfera
+Version: 0.1.0
+Summary: Librería para extraer información recogida en la API Natusfera.
+Home-page: https://github.com/pynomaly/natusfera
+Author: Ana Alvarez
+Author-email: anomalia@disroot.org
+License: GNU General Public License v3
+Platform: UNKNOWN
+Classifier: Development Status :: 2 - Pre-Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)
+Classifier: Operating System :: Unix
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Topic :: Utilities
+Classifier: Natural Language :: English
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+UNKNOWN
+
