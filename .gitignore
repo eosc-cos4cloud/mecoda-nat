@@ -4,3 +4,6 @@ __pycache__
 old_code
 *ipynb
 .coverage
+build/
+dist/
+*egg-info

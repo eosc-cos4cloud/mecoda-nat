@@ -35,7 +35,7 @@ def test_get_project_from_not_found_id_raise_error(requests_mock, capsys):
         json = {"error":"No encontrado"},
         status_code = 404
     )
-    result = get_project(11)
+    get_project(11)
     out, err = capsys.readouterr()
     assert "ID No encontrado" in out
 

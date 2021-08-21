@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from typing import List, Dict, Any, Union, Optional
 import requests
-import datetime
 from .models import Observation, Project, Taxon, Photo
 from contextlib import suppress
 
