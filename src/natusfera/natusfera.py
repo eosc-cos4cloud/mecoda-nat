@@ -132,7 +132,7 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> Observation:
 def _request(arg_url: str) -> List[Observation]:
     observations = []
     n = 1
-    page = requests.get(arg_url)
+    page = requests.get(arg_url, verify=False)
 
     while len(page.json()) == 200:
         n += 1
@@ -141,7 +141,7 @@ def _request(arg_url: str) -> List[Observation]:
             break
         observations.extend(_build_observations(page.json()))
         url = f"{arg_url}&page={n}"
-        page = requests.get(url)
+        page = requests.get(url, verify=False)
     
     if type(page.json()) is list:
         observations.extend(_build_observations(page.json()))
