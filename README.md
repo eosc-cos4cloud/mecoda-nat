@@ -1,3 +1,5 @@
+![ ](docs/natusfera_banner_github.jpg)
+
 # Natusfera
 
 Librería para extraer información recogida en la API Natusfera.
