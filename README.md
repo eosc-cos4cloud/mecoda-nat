@@ -1,7 +1,5 @@
 ![ ](docs/natusfera_banner_github_2.jpg)
 
-# Natusfera
-
 Librería para extraer información recogida en la API Natusfera.
 
 # Instalación
