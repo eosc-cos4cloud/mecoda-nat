@@ -22,7 +22,7 @@ Con `get_obs` se pueden extraer datos de las observaciones recogidas en la API. 
 | `user` | Nombre de usuaria que ha subido las observaciones | `user="zolople"` |
 | `taxon` | Una de las taxonomías principales | `taxon="fungi"` |
 | `place_id` | Número de identificación de un lugar | `place_id=1011` |
-! `place_name` | Nombre de un lugar | `place_name="Barcelona"` |
+| `place_name` | Nombre de un lugar | `place_name="Barcelona"` |
 | `year` | Año de las observaciones | `year=2019` |
 
 Para el argumento `taxon` los valores posibles son:
@@ -185,5 +185,61 @@ Para contribuir a esta librería, sigue los siguientes pasos.
 * Actualiza la documentación.
 
 * Haz commit, push y crea tu pull request.
+
+
+## Subir una nueva versión
+
+* Cambiar a master y actualizar:
+    ```bash
+    git checkout master
+    git pull
+    ```
+
+* Crear una nueva rama:
+    ```bash
+    git checkout -b <nombre-de-la-rama>
+    git pull
+    ```
+* Hacer los cambios en el código
+
+* Correr los tests:
+    ```bash
+    python -m pytest --cov-report term-missing --cov src tests
+    ```
+
+* Editar el archivo `setup.py` para subir la versión, que significa cambiar el argumento `version` en la función `setup`. La convención es 0.1.0 == major.minor.patch. `major` es introducir cambios que rompen el código existente. `minor` se refiere a cambios que agregan funcionalidad pero no rompen código existente. `patch` se refiere a cambios que arreglan errores pero no añaden funcionalidad.
+
+* Hacer commit y push:
+    ```bash
+    git add .
+    git commit -m "<comentario>"
+    git push --set-upstream origin <nombre-de-la-rama>
+    ```
+
+* Seguir el link a github devuelto por el push y mergear.
+
+* Actualizar master:
+    ```bash
+    git checkout master
+    git pull
+    ```
+
+* Crear tag con la nueva versión:
+    ```bash
+    git tag <nueva-version>
+    git push --tags
+    ```
+
+* Construir el paquete:
+    ```bash
+    rm dist/ build/ -r
+    python setup.py -q bdist_wheel
+    python setup.py -q sdist
+    ```
+
+* Subir paquete a pypi:
+    ```bash
+    twine upload -r pypi dist/*
+    ```
 
 ¡Gracias por contribuir a este proyecto!

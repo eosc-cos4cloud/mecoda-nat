@@ -6,4 +6,4 @@ old_code
 .coverage
 build/
 dist/
-*egg-info
+*egg-info*
