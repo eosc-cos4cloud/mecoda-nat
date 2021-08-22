@@ -1,4 +1,4 @@
-![ ](docs/natusfera_banner_github.jpg)
+![ ](docs/natusfera_banner_github_2.jpg)
 
 # Natusfera
 
