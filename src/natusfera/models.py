@@ -36,15 +36,15 @@ class IconicTaxon(IntEnum):
     plantae = 12
 
 class Taxon(BaseModel):
-    iconic_taxon: IconicTaxon
-    id: int
-    name: str
+    iconic_taxon: Optional[IconicTaxon] = None
+    id: Optional[int] = None
+    name: Optional[str] = None
 
 class Photo(BaseModel):
-    id: int
-    large_url: str
-    medium_url: str
-    small_url: str
+    id: Optional[int] = None
+    large_url: Optional[str] = None
+    medium_url: Optional[str] = None
+    small_url: Optional[str] = None
 
 class QualityGrade(str, Enum):
     basico = 'casual'

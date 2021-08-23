@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import datetime
 import pytest
 from natusfera import (
@@ -138,21 +139,17 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
                 {"project_id": 104, "id": 1079, "observation_id": 2084},
                 {"project_id": 121, "id": 1329, "observation_id": 2084}
                 ],
-            "observation_photos": [
+            "photos": [
                 {
                     "id": 1975, 
-                    "photo":{
-                        "large_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/large/rissoella_verruculosa.JPG?1468246242",
-                        "medium_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/medium/rissoella_verruculosa.JPG?1468246242",
-                        "small_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/small/rissoella_verruculosa.JPG?1468246242"}
-                        },
+                    "large_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/large/rissoella_verruculosa.JPG?1468246242",
+                    "medium_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/medium/rissoella_verruculosa.JPG?1468246242",
+                    "small_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/small/rissoella_verruculosa.JPG?1468246242"},
                 {
                     "id": 2075, 
-                    "photo":{
-                        "large_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/large/rissoella_verruculosa.JPG?1468246242",
-                        "medium_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/medium/rissoella_verruculosa.JPG?1468246242",
-                        "small_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/small/rissoella_verruculosa.JPG?1468246242"}
-                        }
+                    "large_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/large/rissoella_verruculosa.JPG?1468246242",
+                    "medium_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/medium/rissoella_verruculosa.JPG?1468246242",
+                    "small_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/small/rissoella_verruculosa.JPG?1468246242"},
                 ],
             "num_identification_agreements": 3,
             "num_identification_disagreements": 0,

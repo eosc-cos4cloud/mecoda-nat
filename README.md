@@ -33,7 +33,7 @@ Ejemplo de uso:
 ```python
 from natusfera import get_obs
 
-observaciones = get_obs(id_project=806, year=2018, taxon='fungi')
+observaciones = get_obs(year=2018, taxon='fungi')
 
 ```
 `observaciones` es una lista de objetos [`Observation`](#observation).
