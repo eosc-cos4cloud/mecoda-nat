@@ -568,3 +568,18 @@ def test_get_obs_from_year_returns_obs(requests_mock,) -> None:
     
     assert result == expected_result
     assert len(result) == 150
+
+
+def test_get_obs_with_num_max(requests_mock,) -> None:
+    expected_result = [Observation(
+        id=id_,
+        ) for id_ in range(10)
+    ]
+    requests_mock.get(
+        f"{API_URL}/observations.json?iconic_taxa=Fungi&per_page=200",
+        json=[{"id": id_,} for id_ in range(200)]
+        )
+
+    result = get_obs(taxon="fungi", num_max=10)
+    assert result == expected_result
+    assert len(result) == 10

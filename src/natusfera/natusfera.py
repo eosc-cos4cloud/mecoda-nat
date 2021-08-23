@@ -190,6 +190,7 @@ def get_obs(
     place_id: Optional[int] = None,
     place_name: Optional[str] = None,
     year: Optional[int] = None,
+    num_max: Optional[int] = None,
     ) -> List[Observation]:
 
     print("Generando lista de observaciones:")
@@ -208,7 +209,7 @@ def get_obs(
                 place_id,
                 year,
                 )
-            observations.extend(_request(url))
+            observations.extend(_request(url, num_max))
     else:
         url = _build_url(
             query, 
@@ -220,7 +221,7 @@ def get_obs(
             year,
             )
 
-        observations = _request(url)
+        observations = _request(url, num_max)
 
     return observations
 
