@@ -142,7 +142,8 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
         
         # eliminación de saltos de línea en el campo description
         with suppress(KeyError):
-            data['description'] = data['description'].replace("\r\n", ' ')
+            if data['description'] is not None:
+                data['description'] = data['description'].replace("\r\n", ' ')
 
         observation = Observation(**data)
 
