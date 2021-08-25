@@ -23,7 +23,7 @@ TAXONS = [
     "Actinopterygii",
     "Fungi",
     "Plantae",
-    "Unknown"
+    "Unknown",
 ]
 
 # Función para extraer los datos de un proyecto a partir de su nombre o id

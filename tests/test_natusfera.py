@@ -583,3 +583,5 @@ def test_get_obs_with_num_max(requests_mock,) -> None:
     result = get_obs(taxon="fungi", num_max=10)
     assert result == expected_result
     assert len(result) == 10
+
+# def test_get_obs_fake_iconic_taxon_returns_none(requests_mock,) -> None:

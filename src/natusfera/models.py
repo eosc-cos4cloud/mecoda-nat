@@ -34,6 +34,7 @@ class IconicTaxon(IntEnum):
     actinopterygii = 3
     fungi = 13
     plantae = 12
+    vida = 1
 
 class Taxon(BaseModel):
     iconic_taxon: Optional[IconicTaxon] = None
