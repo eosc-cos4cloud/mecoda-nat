@@ -3,6 +3,7 @@ from typing import List, Dict, Any, Union, Optional
 import requests
 from .models import Observation, Project, Taxon, Photo
 from contextlib import suppress
+from pydantic import ValidationError
 import urllib3
 urllib3.disable_warnings()
 
