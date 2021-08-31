@@ -13,7 +13,6 @@ class Project(BaseModel):
     updated_at: Optional[datetime] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    place_id: Optional[int] = None
     parent_id: Optional[int] = None
     children_id: List[int] = []
     user_id: Optional[int] = None
@@ -40,6 +39,7 @@ class Taxon(BaseModel):
     iconic_taxon: Optional[IconicTaxon] = None
     id: Optional[int] = None
     name: Optional[str] = None
+    ancestry: Optional[str] = None
 
 class Photo(BaseModel):
     id: Optional[int] = None
@@ -62,11 +62,11 @@ class Observation(BaseModel):
     taxon: Optional[Taxon] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
-    place_id: Optional[int] = None
+    place_name: Optional[str] = None
     quality_grade: Optional[QualityGrade] = None 
     user_id: Optional[int] = None
     user_login: Optional[str] = None
-    project_ids: List[int] = []
+    #project_ids: List[int] = []
     photos: List[Photo] = []
     num_identification_agreements: Optional[int] = None
     num_identification_disagreements: Optional[int] = None

@@ -5,6 +5,9 @@ from .models import Observation, Project, Taxon, Photo
 from contextlib import suppress
 from pydantic import ValidationError
 import urllib3
+import pandas as pd
+import flat_table
+
 urllib3.disable_warnings()
 
 # Definición de variables
@@ -117,14 +120,18 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
     for data in observations_data:
         
         with suppress(KeyError):
+            if data['place_guess'] is not None:
+                data['place_name'] = data['place_guess'].replace("\r\n", ' ').strip()
+
+        with suppress(KeyError):
             data["taxon"] = Taxon(
                 id=data['taxon']['id'],
                 name=data['taxon']['name'],
-                iconic_taxon=data['iconic_taxon_id'],
+                ancestry=data['taxon']['ancestry'],
             )
         
-        with suppress(KeyError):
-            data["project_ids"] = [proj['project_id'] for proj in data['project_observations']]
+        #with suppress(KeyError):
+        #    data["project_ids"] = [proj['project_id'] for proj in data['project_observations']]
     
         with suppress(KeyError):
             lista_fotos = []
@@ -236,3 +243,16 @@ def get_count_by_taxon() -> Dict:
     for taxon in taxa:
         count[taxon['name']] = taxon['observations_count']
     return count
+
+
+# Función para extraer dataframe de observaciones y dataframe de photos
+def get_dfs(observations) -> pd.DataFrame:
+    
+    df = pd.DataFrame([obs.dict() for obs in observations])
+
+    df_observations = flat_table.normalize(df).drop(['index'], axis=1)
+
+    df_photos = flat_table.normalize(df[['id', 'photos']]).drop(['index'], axis=1)
+    df_photos = df_photos[['id', 'photos.id', 'photos.large_url', 'photos.medium_url', 'photos.small_url']]
+
+    return df_observations, df_photos
