@@ -60,6 +60,7 @@ def _get_ids_from_place(place:str) -> list:
     for dct in page.json():
         place_id = dct['id']
         place_ids.append(place_id)
+        
     return place_ids
 
 

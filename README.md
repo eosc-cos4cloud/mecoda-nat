@@ -90,11 +90,10 @@ El objeto `Observation` contiene la información de cada una de las observacione
 | `taxon` | `Optional[Taxon]` | Objeto [`Taxon`](#taxon) con información del especimen | `None` |
 | `latitude` | `Optional[float]` | Latitud | `None` |
 | `longitude` | `Optional[float]` | Longitud | `None` |
-| `place_id` | `Optional[int]` | Número de identificación del lugar | `None` |
+| `place_name` | `Optional[str]` | Nombre del lugar de la observación | `None` |
 | `quality_grade` | `Optional[QualityGrade]` | Grado de calidad: `basico` o `investigacion` |`None` |
 | `user_id` | `Optional[int]` | Número de identificación de la usuaria | `None` |
 | `user_login` | `Optional[str]` | Nombre de registro de la usuaria | `None` |
-| `project_ids` | `List[int]` | Lista con el o los números de proyecto en los que se engloba la observación | `[]` |
 | `photos` | `List[Photo]` | Lista de objetos [`Photo`](#photo), que incluyen información de cada fotografía de la observación | `[]` |
 | `num_identification_agreements` | `Optional[int]` | Número de votos favorables a la identificación | `None` |
 | `num_identification_disagreements` | `Optional[int]` | Número de votos favorables a la identificación | `None` |
@@ -130,6 +129,7 @@ El objeto `Taxon` contiene la información taxonómica de cada observación regi
 | `iconic_taxon` | `IconicTaxon` | Familia taxonómica |  |
 | `id` | `int` | Número de identificación de la especie |  |
 | `name` | `str` | Nombre de la especie observada |  |
+| `ancestry` | `str` | Números de las taxonomías en las que se engloba la observación |  |
 
 
 ## Photo
