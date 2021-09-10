@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from typing import List, Dict, Any, Union, Optional
 import requests
-from .models import Observation, Project, Taxon, Photo
 from contextlib import suppress
 from pydantic import ValidationError
 import urllib3
@@ -12,23 +11,6 @@ urllib3.disable_warnings()
 
 # Definición de variables
 API_URL = "https://natusfera.gbif.es"
-
-TAXONS = [
-    "Chromista",
-    "Protozoa",
-    "Animalia",
-    "Mollusca",
-    "Arachnida",
-    "Insecta",
-    "Aves",
-    "Mammalia",
-    "Amphibia",
-    "Reptilia",
-    "Actinopterygii",
-    "Fungi",
-    "Plantae",
-    "Unknown",
-]
 
 # Función para extraer los datos de un proyecto a partir de su nombre o id
 def get_project(p: Union[str, int]) -> List[Project]:
@@ -62,7 +44,6 @@ def _get_ids_from_place(place:str) -> list:
         place_ids.append(place_id)
         
     return place_ids
-
 
 
 # Función interna para construir la url a la que se hará la petición de observaciones
@@ -147,7 +128,7 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
             # devuelve siempre una lista vacía
 
         with suppress(KeyError):
-            data['iconic_taxon'] = data['iconic_taxon_id']
+            data['iconic_taxon'] = ICONIC_TAXON[data['iconic_taxon_id']]
         
         # eliminación de saltos de línea en el campo description
         with suppress(KeyError):
@@ -250,10 +231,28 @@ def get_count_by_taxon() -> Dict:
 def get_dfs(observations) -> pd.DataFrame:
     
     df = pd.DataFrame([obs.dict() for obs in observations])
+    df2 = df.drop(['photos'], axis=1)
 
-    df_observations = flat_table.normalize(df).drop(['index'], axis=1)
+    df_observations = flat_table.normalize(df2).drop(['index'], axis=1)
 
-    df_photos = flat_table.normalize(df[['id', 'photos']]).drop(['index'], axis=1)
-    df_photos = df_photos[['id', 'photos.id', 'photos.large_url', 'photos.medium_url', 'photos.small_url']]
+    df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon']]).drop(['index'], axis=1)
+    df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon.name', 'photos.medium_url']]
 
     return df_observations, df_photos
+
+# Función para descargar las fotos resultado de la consulta
+def download_photos(df_photos: DataFrame, directorio: Optional[str] = "./natusfera_photos"):
+    
+    # Crea la carpeta, si existe la sobreescribre
+    if os.path.exists(directorio):
+        shutil.rmtree(directorio)
+    os.makedirs(directorio)
+
+    # Itera por el df_photos resultado de la consulta y descarga las fotos en tamaño medio
+    for n in range(len(df_photos)):
+        row = df_photos.iloc[[n]]
+        response = requests.get(row['photos.medium_url'][0], verify=False, stream=True)
+        while response.status_code == 200:
+            with open(f"./natusfera_photos/{row['id'][0]}_{row['photos.id'][0]}.jpg", 'wb') as out_file:
+                shutil.copyfileobj(response.raw, out_file)
+        del response
