@@ -10,7 +10,8 @@ from natusfera import (
     Observation,
     Taxon,
     Photo,
-    IconicTaxon
+    TAXONS,
+    ICONIC_TAXON
 )
 
 API_URL = "https://natusfera.gbif.es"
@@ -91,7 +92,7 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
         updated_at=datetime.datetime(2016, 7, 28, 10, 44, 44, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200))),
         observed_on=datetime.datetime(2016, 7, 6, 0, 0),
         description="",
-        iconic_taxon=IconicTaxon.chromista,
+        iconic_taxon="chromista",
         taxon=Taxon(
             id=2850, 
             name="Rissoella verruculosa",
@@ -168,7 +169,7 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
 def test_get_obs_from_query_returns_observations_data_when_less_than_pagination(requests_mock):
     expected_result = [Observation(
         id=id, 
-        iconic_taxon=IconicTaxon.animalia,
+        iconic_taxon="animalia",
         created_at=datetime.datetime(2021, 3, 15, 16, 10, 39, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200)))
         ) for id in range(3)]
     requests_mock.get(
@@ -282,7 +283,7 @@ def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
     expected_result = [Observation(
         id=1,
         user_id=id_,
-        iconic_taxon=IconicTaxon.amphibia,
+        iconic_taxon="amphibia",
         taxon=Taxon(
             id=481,
             name="Hedera",
@@ -338,7 +339,7 @@ def test_get_project_from_name_returns_observations_data(requests_mock,) -> None
 
 def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None:
     expected_result = [Observation(
-        iconic_taxon=IconicTaxon.fungi,
+        iconic_taxon="fungi",
         id=313430,
         taxon=Taxon(id=39432, name="Cheilymenia theleboloides", ancestry=None),
         updated_at=datetime.datetime(2021, 7, 12, 23, 36, 48, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200)))
@@ -388,7 +389,7 @@ def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None
 
 def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
     expected_result = [Observation(
-        iconic_taxon=IconicTaxon.actinopterygii,
+        iconic_taxon="actinopterygii",
         id=1645,
         user_login="andrea",
         taxon=Taxon(id=2948, name="Holothuria", ancestry=None),

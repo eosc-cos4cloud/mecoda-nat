@@ -1,10 +1,44 @@
 from datetime import datetime, date
 from typing import Optional, List
 from pydantic import BaseModel
-from enum import Enum, IntEnum
 
 
 # Objetos de las entidades de nuestro programa: observaciones y proyectos
+
+TAXONS = [
+    "Chromista",
+    "Protozoa",
+    "Animalia",
+    "Mollusca",
+    "Arachnida",
+    "Insecta",
+    "Aves",
+    "Mammalia",
+    "Amphibia",
+    "Reptilia",
+    "Actinopterygii",
+    "Fungi",
+    "Plantae",
+    "Unknown",
+]
+
+ICONIC_TAXON = {
+    1: 'ser vivo',
+    2: 'animalia',
+    3: 'actinopterygii',
+    5: 'aves',
+    6: 'reptilia',
+    7: 'amphibia',
+    8: 'mammalia',
+    9: 'arachnida',
+    11: 'insecta',
+    12: 'plantae',
+    13: 'fungi',
+    14: 'protozoa',
+    15: 'mollusca',
+    16: 'chromista'
+}
+
 class Project(BaseModel):
     id: int
     title: str
@@ -19,24 +53,7 @@ class Project(BaseModel):
     icon_url: Optional[str] = None
     observed_taxa_count: Optional[int] = None
 
-class IconicTaxon(IntEnum):
-    chromista = 16
-    protozoa = 14
-    animalia = 2
-    mollusca = 15
-    arachnida = 9
-    insecta = 11
-    aves = 5
-    mammalia = 8
-    amphibia = 7
-    reptilia = 6
-    actinopterygii = 3
-    fungi = 13
-    plantae = 12
-    vida = 1
-
 class Taxon(BaseModel):
-    iconic_taxon: Optional[IconicTaxon] = None
     id: Optional[int] = None
     name: Optional[str] = None
     ancestry: Optional[str] = None
@@ -47,10 +64,6 @@ class Photo(BaseModel):
     medium_url: Optional[str] = None
     small_url: Optional[str] = None
 
-class QualityGrade(str, Enum):
-    basico = 'casual'
-    investigacion = 'research'
-
 class Observation(BaseModel):
     id: int
     captive: Optional[bool] = None
@@ -58,13 +71,13 @@ class Observation(BaseModel):
     updated_at: Optional[datetime] = None
     observed_on: Optional[date] = None
     description: Optional[str] = None  
-    iconic_taxon: Optional[IconicTaxon] = None
+    iconic_taxon: Optional[str] = None
     taxon: Optional[Taxon] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     place_name: Optional[str] = None
     place_id: Optional[int] = None
-    quality_grade: Optional[QualityGrade] = None 
+    quality_grade: Optional[str] = None 
     user_id: Optional[int] = None
     user_login: Optional[str] = None
     #project_ids: List[int] = []
