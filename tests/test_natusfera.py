@@ -2,10 +2,12 @@
 
 import datetime
 import pytest
+import pandas as pd
 from natusfera import (
     get_project,
     get_obs,
     get_count_by_taxon,
+    get_dfs,
     Project,
     Observation,
     Taxon,
@@ -584,4 +586,16 @@ def test_get_obs_with_num_max(requests_mock,) -> None:
     assert result == expected_result
     assert len(result) == 10
 
-# def test_get_obs_fake_iconic_taxon_returns_none(requests_mock,) -> None:
+def test_get_dfs_extrae_dfs(requests_mock,) -> None:
+    observations = [
+        Observation(
+            id=1,
+            photos=[
+                Photo(
+                    id=1,
+                    medium_url="http://a.jpg")],
+
+        )]
+    expected_results = pd.DataFrame([{"id":1, }]), pd.DataFrame() 
+
+    result = get_dfs(observations)

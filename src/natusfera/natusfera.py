@@ -3,7 +3,7 @@ from .models import Project, Observation, TAXONS, ICONIC_TAXON, Taxon, Photo
 from typing import List, Dict, Any, Union, Optional
 import requests
 from contextlib import suppress
-from pydantic import ValidationError
+#from pydantic import ValidationError
 import urllib3
 import pandas as pd
 import flat_table
@@ -53,13 +53,17 @@ def _get_ids_from_place(place:str) -> list:
 def _build_url(
     query: Optional[str] = None, 
     id_project: Optional[int] = None,
+    project_name: Optional[str] = None,
     id_obs: Optional[int] = None,
     user: Optional[str] = None,
     taxon: Optional[str] = None,
     place_id: Optional[int] = None,
     year: Optional[int] = None,
     ) -> str:
-
+    
+    if project_name is not None:
+        id_project = get_project(project_name)[0].id
+    
     # definir la base url
     if id_project is not None:
         base_url = f"{API_URL}/observations/project/{id_project}.json"
@@ -178,6 +182,7 @@ def _request(arg_url: str, num_max: Optional[int] = None) -> List[Observation]:
 def get_obs(
     query: Optional[str] = None, 
     id_project: Optional[int] = None,
+    project_name: Optional[str] = None,
     id_obs: Optional[int] = None,
     user: Optional[str] = None,
     taxon: Optional[str] = None,
@@ -197,6 +202,7 @@ def get_obs(
             url = _build_url(
                 query, 
                 id_project,
+                project_name,
                 id_obs,
                 user,
                 taxon,
@@ -208,6 +214,7 @@ def get_obs(
         url = _build_url(
             query, 
             id_project,
+            project_name,
             id_obs,
             user,
             taxon,
@@ -237,10 +244,13 @@ def get_dfs(observations) -> pd.DataFrame:
     df2 = df.drop(['photos'], axis=1)
 
     df_observations = flat_table.normalize(df2).drop(['index'], axis=1)
-
-    df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon']]).drop(['index'], axis=1)
-    df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon.name', 'photos.medium_url']]
-
+    df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date())
+    df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date())
+    
+    df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon', 'user_login', 'latitude', 'longitude']]).drop(['index'], axis=1)
+    df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon.name', 'photos.medium_url', 'user_login', 'latitude', 'longitude']]
+    df_photos['path'] = df_photos['id'].astype(str) + "_" + df_photos['photos.id'].astype(str) + ".jpg"
+    
     return df_observations, df_photos
 
 # Función para descargar las fotos resultado de la consulta
@@ -254,8 +264,9 @@ def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "./natu
     # Itera por el df_photos resultado de la consulta y descarga las fotos en tamaño medio
     for n in range(len(df_photos)):
         row = df_photos.iloc[[n]]
-        response = requests.get(row['photos.medium_url'][0], verify=False, stream=True)
-        while response.status_code == 200:
-            with open(f"./natusfera_photos/{row['id'][0]}_{row['photos.id'][0]}.jpg", 'wb') as out_file:
+        response = requests.get(row['photos.medium_url'][n], verify=False, stream=True)
+        if response.status_code == 200:
+            with open(f"{directorio}/{row['path'][n]}", 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
         del response
+    df_photos['path'] = df_photos['path'].apply(lambda x: directorio + "/" + x)
