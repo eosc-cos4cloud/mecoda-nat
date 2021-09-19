@@ -269,4 +269,4 @@ def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "./natu
             with open(f"{directorio}/{row['path'][n]}", 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
         del response
-    df_photos['path'] = df_photos['path'].apply(lambda x: directorio + "/" + x)
+    df_photos['path'] = df_photos['path'].apply(lambda x: os.path.abspath(f"{directorio}/{x}"))

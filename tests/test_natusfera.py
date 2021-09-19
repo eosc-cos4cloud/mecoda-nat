@@ -594,8 +594,15 @@ def test_get_dfs_extrae_dfs(requests_mock,) -> None:
                 Photo(
                     id=1,
                     medium_url="http://a.jpg")],
-
-        )]
-    expected_results = pd.DataFrame([{"id":1, }]), pd.DataFrame() 
+            iconic_taxon="animalia",
+            taxon="Thalassoma pavo",
+            user_login="joselu_00",
+            latitude=40.1,
+            longitude=-7.5,
+            created_at="2021-09-16",
+            updated_at="2021-09-16",
+            )]
+    expected_result = pd.DataFrame([{"id":1, }]), pd.DataFrame() 
 
     result = get_dfs(observations)
+    assert result == expected_result
