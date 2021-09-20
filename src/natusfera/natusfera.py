@@ -112,15 +112,14 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
             if data['place_guess'] is not None:
                 data['place_name'] = data['place_guess'].replace("\r\n", ' ').strip()
 
-        with suppress(KeyError):
+        try:
             data["taxon"] = Taxon(
                 id=data['taxon']['id'],
                 name=data['taxon']['name'],
-                ancestry=data['taxon']['ancestry'],
+                ancestry=data['taxon']['ancestry']
             )
-        
-        #with suppress(KeyError):
-        #    data["project_ids"] = [proj['project_id'] for proj in data['project_observations']]
+        except KeyError:
+            data['taxon'] = None
     
         with suppress(KeyError):
             lista_fotos = []
@@ -132,7 +131,6 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
                     small_url=observation_photo['small_url'],
                 ))
             data['photos'] = lista_fotos
-            # devuelve siempre una lista vacía
 
         with suppress(KeyError):
             data['iconic_taxon'] = ICONIC_TAXON[data['iconic_taxon_id']]
@@ -246,10 +244,13 @@ def get_dfs(observations) -> pd.DataFrame:
     df_observations = flat_table.normalize(df2).drop(['index'], axis=1)
     df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date())
     df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date())
-    
+    df_observations['taxon.id'] = df_observations['taxon.id'].astype('Int64', errors='ignore')
+
     df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon', 'user_login', 'latitude', 'longitude']]).drop(['index'], axis=1)
     df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon.name', 'photos.medium_url', 'user_login', 'latitude', 'longitude']]
+
     df_photos['path'] = df_photos['id'].astype(str) + "_" + df_photos['photos.id'].astype(str) + ".jpg"
+    df_observations['photo.id'] = df_observations['photo.id'].astype('Int64', errors='ignore')
     
     return df_observations, df_photos
 
