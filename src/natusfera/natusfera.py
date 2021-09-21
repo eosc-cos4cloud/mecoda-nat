@@ -245,9 +245,14 @@ def get_dfs(observations) -> pd.DataFrame:
     df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date())
     df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date())
     df_observations['taxon.id'] = df_observations['taxon.id'].astype('Int64', errors='ignore')
+    df_observations['longitude'] = df_observations['longitude'].astype('float', errors='ignore')
+    df_observations['latitude'] = df_observations['latitude'].astype('float', errors='ignore')
 
     df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon', 'user_login', 'latitude', 'longitude']]).drop(['index'], axis=1)
     df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon.name', 'photos.medium_url', 'user_login', 'latitude', 'longitude']]
+    
+    df_photos['longitude'] = df_photos['longitude'].astype('float', errors='ignore')
+    df_photos['latitude'] = df_photos['latitude'].astype('float', errors='ignore')
 
     df_photos['path'] = df_photos['id'].astype(str) + "_" + df_photos['photos.id'].astype(str) + ".jpg"
     df_observations['photo.id'] = df_observations['photo.id'].astype('Int64', errors='ignore')
