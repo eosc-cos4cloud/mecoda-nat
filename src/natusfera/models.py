@@ -2,7 +2,6 @@ from datetime import datetime, date
 from typing import Optional, List
 from pydantic import BaseModel
 
-
 # Objetos de las entidades de nuestro programa: observaciones y proyectos
 
 TAXONS = [

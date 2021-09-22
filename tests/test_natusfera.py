@@ -10,7 +10,6 @@ from natusfera import (
     get_dfs,
     Project,
     Observation,
-    Taxon,
     Photo,
     TAXONS,
     ICONIC_TAXON
@@ -95,10 +94,9 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
         observed_on=datetime.datetime(2016, 7, 6, 0, 0),
         description="",
         iconic_taxon="chromista",
-        taxon=Taxon(
-            id=2850, 
-            name="Rissoella verruculosa",
-            ancestry=None),
+        taxon_id=2850, 
+        taxon_name="Rissoella verruculosa",
+        taxon_ancestry=None,
         latitude="41.773743",
         longitude="3.021853",
         quality_grade="research",
@@ -286,11 +284,9 @@ def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
         id=1,
         user_id=id_,
         iconic_taxon="amphibia",
-        taxon=Taxon(
-            id=481,
-            name="Hedera",
-            ancestry=None
-        )
+        taxon_id=481,
+        taxon_name="Hedera",
+        taxon_ancestry=None
         ) for id_ in range(37)
     ]
     
@@ -343,7 +339,9 @@ def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None
     expected_result = [Observation(
         iconic_taxon="fungi",
         id=313430,
-        taxon=Taxon(id=39432, name="Cheilymenia theleboloides", ancestry=None),
+        taxon_id=39432, 
+        taxon_name="Cheilymenia theleboloides", 
+        taxon_ancestry=None,
         updated_at=datetime.datetime(2021, 7, 12, 23, 36, 48, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200)))
     ) for i in range(456)]
 
@@ -394,7 +392,9 @@ def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
         iconic_taxon="actinopterygii",
         id=1645,
         user_login="andrea",
-        taxon=Taxon(id=2948, name="Holothuria", ancestry=None),
+        taxon_id=2948, 
+        taxon_name="Holothuria", 
+        taxon_ancestry=None,
         created_at=datetime.datetime(2021, 8, 15, 19, 43, 43, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200)))
     ) for i in range(456)]
 
