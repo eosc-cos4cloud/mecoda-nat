@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from .models import Project, Observation, TAXONS, ICONIC_TAXON, Taxon, Photo
+from .models import Project, Observation, TAXONS, ICONIC_TAXON, Photo
 from typing import List, Dict, Any, Union, Optional
 import requests
 from contextlib import suppress
@@ -112,14 +112,15 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
             if data['place_guess'] is not None:
                 data['place_name'] = data['place_guess'].replace("\r\n", ' ').strip()
 
-        try:
-            data["taxon"] = Taxon(
-                id=data['taxon']['id'],
-                name=data['taxon']['name'],
-                ancestry=data['taxon']['ancestry']
-            )
-        except KeyError:
-            data['taxon'] = None
+        with suppress(KeyError):
+            try:
+                data["taxon_id"]=int(data['taxon']['id'])
+                data["taxon_name"]=data['taxon']['name']
+                data['taxon_ancestry']=data['taxon']['ancestry']
+            except:
+                data["taxon_id"]=None
+                data["taxon_name"]=None
+                data['taxon_ancestry']=None
     
         with suppress(KeyError):
             lista_fotos = []
@@ -238,18 +239,19 @@ def get_count_by_taxon() -> Dict:
 # Función para extraer dataframe de observaciones y dataframe de photos
 def get_dfs(observations) -> pd.DataFrame:
     df = pd.DataFrame([obs.dict() for obs in observations])
-    
     df2 = df.drop(['photos'], axis=1)
 
     df_observations = flat_table.normalize(df2).drop(['index'], axis=1)
-    df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date())
-    df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date())
+    df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date()).astype('datetime64[ns]')
+    df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date()).astype('datetime64[ns]')
+    df_observations['observed_on'] = df_observations['observed_on'].astype('datetime64[ns]')
+    df_observations = df_observations[[]]
 
     df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon_id', 'taxon_name', 'taxon_ancestry', 'user_login', 'latitude', 'longitude']]).drop(['index'], axis=1)
     df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon_name', 'photos.medium_url', 'user_login', 'latitude', 'longitude']]
-    
-    df_photos['path'] = df_photos['id'].astype(str) + "_" + df_photos['photos.id'].astype(str) + ".jpg"
     df_photos['photos.id'] = df_photos['photos.id'].astype("Int64", errors='ignore')
+    df_photos['path'] = df_photos['id'].astype(str) + "_" + df_photos['photos.id'].astype(str) + ".jpg"
+    
     return df_observations, df_photos
 
 # Función para descargar las fotos resultado de la consulta
