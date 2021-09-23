@@ -134,6 +134,17 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
             data['photos'] = lista_fotos
 
         with suppress(KeyError):
+            lista_fotos = []
+            for observation_photo in data['observation_photos']:
+                lista_fotos.append(Photo(
+                    id=observation_photo['id'],
+                    large_url=observation_photo['photo']['large_url'],
+                    medium_url=observation_photo['photo']['medium_url'],
+                    small_url=observation_photo['photo']['small_url'],
+                ))
+            data['photos'] = lista_fotos
+
+        with suppress(KeyError):
             data['iconic_taxon'] = ICONIC_TAXON[data['iconic_taxon_id']]
         
         # eliminación de saltos de línea en el campo description
@@ -255,7 +266,7 @@ def get_dfs(observations) -> pd.DataFrame:
     return df_observations, df_photos
 
 # Función para descargar las fotos resultado de la consulta
-def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "./natusfera_photos"):
+def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "/home/anomalia/projects/Orange/natusfera_photos"):
     
     # Crea la carpeta, si existe la sobreescribre
     if os.path.exists(directorio):

@@ -129,7 +129,7 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
             "observed_on": "2016-07-06",
             "description": "",
             "iconic_taxon_id": 16,
-            "taxon_id": 2850,
+            "taxon": {"id": 2850, "name": "Rissoella verruculosa", "ancestry": None},
             "latitude": "41.773743",
             "longitude": "3.021853",
             "quality_grade": "research",
@@ -152,11 +152,7 @@ def test_get_obs_by_id_returns_observations_data(requests_mock,):
                     "small_url": "https://natusfera.gbif.es/attachments/local_photos/files/2947/small/rissoella_verruculosa.JPG?1468246242"},
                 ],
             "num_identification_agreements": 3,
-            "num_identification_disagreements": 0,
-            "taxon": {
-                "id": 2850,
-                "name": "Rissoella verruculosa",
-                "iconic_taxon_id": 16}
+            "num_identification_disagreements": 0
             }
         )
 
@@ -296,7 +292,10 @@ def test_get_obs_project_returns_observations_data(requests_mock,) -> None:
             {"id": 1,
             "user_id": id_, 
             "iconic_taxon_id": 7,
-            "taxon": {"id": 481, "name": "Hedera"}
+            "taxon": {
+                "id": 481, 
+                "name": "Hedera",
+                "ancestry": None}
             } for id_ in range(37)
         ],
     )
@@ -350,10 +349,7 @@ def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None
         json=[{
             "iconic_taxon_id": 13, 
             "id": 313430, 
-            "taxon": {
-                "id": 39432, 
-                "name": "Cheilymenia theleboloides"
-                },
+            "taxon": {"id": 39432, "name": "Cheilymenia theleboloides", "ancestry": None},
             'updated_at': "2021-07-12T23:36:48+02:00",} for id_ in range(200)
         ]
     )
@@ -362,10 +358,7 @@ def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None
         json=[{
             "iconic_taxon_id": 13, 
             "id": 313430, 
-            "taxon": {
-                "id": 39432, 
-                "name": "Cheilymenia theleboloides"
-                },
+            "taxon": {"id": 39432, "name": "Cheilymenia theleboloides", "ancestry": None},
             'updated_at': "2021-07-12T23:36:48+02:00",} for id_ in range(200)
         ]
     )
@@ -374,15 +367,12 @@ def test_get_obs_from_taxon_returns_info_with_pagination(requests_mock,) -> None
         json=[{
             "iconic_taxon_id": 13, 
             "id": 313430, 
-            "taxon": {
-                "id": 39432, 
-                "name": "Cheilymenia theleboloides"
-                },
+            "taxon": {"id": 39432, "name": "Cheilymenia theleboloides", "ancestry": None},
             'updated_at': "2021-07-12T23:36:48+02:00",} for id_ in range(56)
         ]
     )
     result = get_obs(taxon='Fungi')
-
+    
     assert result == expected_result
     assert len(result) == 456
 
@@ -401,7 +391,7 @@ def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
     requests_mock.get(
         f"{API_URL}/observations.json?place_id=1011&per_page=200",
         json=[{
-            "taxon": {"id": 2948, "name": "Holothuria"}, 
+            "taxon": {"id": 2948, "name": "Holothuria", "ancestry": None}, 
             "id": 1645, 
             "iconic_taxon_id": 3,
             "user_login": "andrea",
@@ -411,7 +401,7 @@ def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
     requests_mock.get(
         f"{API_URL}/observations.json?place_id=1011&per_page=200&page=2",
         json=[{
-            "taxon": {"id": 2948, "name": "Holothuria"}, 
+            "taxon": {"id": 2948, "name": "Holothuria", "ancestry": None}, 
             "id": 1645, 
             "iconic_taxon_id": 3,
             "user_login": "andrea",
@@ -421,7 +411,7 @@ def test_get_obs_from_place_id_returns_obs(requests_mock,) -> None:
     requests_mock.get(
         f"{API_URL}/observations.json?place_id=1011&per_page=200&page=3",
         json=[{
-            "taxon": {"id": 2948, "name": "Holothuria"}, 
+            "taxon": {"id": 2948, "name": "Holothuria", "ancestry": None}, 
             "id": 1645, 
             "iconic_taxon_id": 3,
             "user_login": "andrea",
@@ -586,6 +576,7 @@ def test_get_obs_with_num_max(requests_mock,) -> None:
     assert result == expected_result
     assert len(result) == 10
 
+'''
 def test_get_dfs_extrae_dfs(requests_mock,) -> None:
     observations = [
         Observation(
@@ -606,3 +597,4 @@ def test_get_dfs_extrae_dfs(requests_mock,) -> None:
 
     result = get_dfs(observations)
     assert result == expected_result
+'''
