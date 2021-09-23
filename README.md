@@ -87,7 +87,9 @@ El objeto `Observation` contiene la información de cada una de las observacione
 | `observed_on` | `Optional[date]` | Fecha de la observación | `None` |
 | `description` | `Optional[str]` | Descripción de la observación | `None` |
 | `iconic_taxon` | `Optional[IconicTaxon]` | Famlia taxonómíca | `None` |
-| `taxon` | `Optional[Taxon]` | Objeto [`Taxon`](#taxon) con información del especimen | `None` |
+| `taxon_id` | `Optional[int]` | Número de identificación de la taxonomía concreta | `None` |
+| `taxon_name` | `Optional[str]` | Nombre de la especie observada | `None` |
+| `taxon_ancestry` | `Optional[str]` | Cadena de la secuncia taxonómica a la que corresponde la observación, con identificadores separados por `/` | `None` |
 | `latitude` | `Optional[float]` | Latitud | `None` |
 | `longitude` | `Optional[float]` | Longitud | `None` |
 | `place_name` | `Optional[str]` | Nombre del lugar de la observación | `None` |
