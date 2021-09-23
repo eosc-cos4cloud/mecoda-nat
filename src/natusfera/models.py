@@ -2,7 +2,6 @@ from datetime import datetime, date
 from typing import Optional, List
 from pydantic import BaseModel
 
-
 # Objetos de las entidades de nuestro programa: observaciones y proyectos
 
 TAXONS = [
@@ -53,10 +52,10 @@ class Project(BaseModel):
     icon_url: Optional[str] = None
     observed_taxa_count: Optional[int] = None
 
-class Taxon(BaseModel):
-    id: Optional[int] = None
-    name: Optional[str] = None
-    ancestry: Optional[str] = None
+#class Taxon(BaseModel):
+#    id: Optional[int] = None
+#    name: Optional[str] = None
+#    ancestry: Optional[str] = None
 
 class Photo(BaseModel):
     id: Optional[int] = None
@@ -72,7 +71,9 @@ class Observation(BaseModel):
     observed_on: Optional[date] = None
     description: Optional[str] = None  
     iconic_taxon: Optional[str] = None
-    taxon: Optional[Taxon] = None
+    taxon_id: Optional[int] = None
+    taxon_name: Optional[str] = None
+    taxon_ancestry: Optional[str] = None
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     place_name: Optional[str] = None
