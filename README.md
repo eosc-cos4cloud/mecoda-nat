@@ -122,18 +122,6 @@ El objeto `Project` contiene la información de cada uno de los proyectos regist
 | `observed_taxa_count` | `Optional[int]` | Número de observaciones que incluye el proyecto | `None` |
 
 
-## Taxon
-
-El objeto `Taxon` contiene la información taxonómica de cada observación registrada y tiene los siguientes atributos.
-
-| Atributo | Tipo | Description | Valor por defecto |
-| -------- | ---- | ----------- | ----------------- |
-| `iconic_taxon` | `IconicTaxon` | Familia taxonómica |  |
-| `id` | `int` | Número de identificación de la especie |  |
-| `name` | `str` | Nombre de la especie observada |  |
-| `ancestry` | `str` | Números de las taxonomías en las que se engloba la observación |  |
-
-
 ## Photo
 
 El objeto `Photo` contiene la información de cada fotografía vinculada a una observación y tiene los siguientes atributos.
