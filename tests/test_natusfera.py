@@ -589,17 +589,17 @@ def test_get_dfs_extrae_dfs(requests_mock,) -> None:
             user_login="joselu_00",
             latitude=40.1,
             longitude=-7.5,
-            observed_on=datetime(2021, 9, 16),
-            created_at=datetime(2021, 9, 2, 19, 43, 43, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200))),
-            updated_at=datetime(2021, 9, 2, 19, 43, 43, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200))),
+            observed_on=datetime.datetime(2021, 9, 16),
+            created_at=datetime.datetime(2021, 9, 2, 19, 43, 43, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200))),
+            updated_at=datetime.datetime(2021, 9, 2, 19, 43, 43, tzinfo=datetime.timezone(datetime.timedelta(seconds=7200))),
             )]
 
     expected_result_obs = pd.DataFrame([{
         "id":1, 
         'captive': None,
-        "created_at": "2021-09-02",
-        "updated_at": "2021-09-02",
-        "observed_on": "2021-09-16",
+        "created_at": None,
+        "updated_at": None,
+        "observed_on": None,
         'description': None, 
         "iconic_taxon": "animalia",
         'taxon_id': None, 
@@ -622,9 +622,14 @@ def test_get_dfs_extrae_dfs(requests_mock,) -> None:
              'photos.id', 'iconic_taxon', 'taxon_name', 'photos.medium_url', 'user_login', 'latitude', 'longitude'}) 
     """
     result_obs, result_photo = get_dfs(observations)
-    __import__('pdb').set_trace()
-    assert result_obs[['captive', 'place_id', 'quality_grade']].isnull()
-
+    assert type(result_obs) == pd.DataFrame    
+    assert(len(result_obs)) == len(observations)
+    assert result_obs['id'].values != None  
+    
+    # check None pandas: https://stackoverflow.com/questions/45271309/check-for-none-in-pandas-dataframe
+    # assert result_obs[['captive', 'place_id', 'quality_grade']].isnull()
+    # assert result_obs[['captive', 'place_id', 'quality_grade']].values == None
+    
     #assert result_photo == expected_result_photo
 
-# def test_download_photos
+    # def test_download_photos
