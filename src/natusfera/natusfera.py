@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from Orange.data.variable import Value
 from .models import Project, Observation, TAXONS, ICONIC_TAXON, Photo
 from typing import List, Dict, Any, Union, Optional
 import requests
@@ -164,28 +165,32 @@ def _request(arg_url: str, num_max: Optional[int] = None) -> List[Observation]:
     n = 1
     page = requests.get(arg_url, verify=False)
 
-    if type(page.json()) is dict:
-        observations.extend(_build_observations([page.json()]))
-    
-    else:
-        while len(page.json()) == 200:
-            observations.extend(_build_observations(page.json()))
-            n += 1
-            if n > 99:
-                print("WARNING: Only the first 20,000 results are displayed")
-                break
-            if num_max is not None and len(observations) >= num_max:
-                break
-            url = f"{arg_url}&page={n}"
-            page = requests.get(url, verify=False)
-            print(f"Número de elementos: {len(observations)}")
-            
-        observations.extend(_build_observations(page.json()))
-        
-        if num_max:
-            observations = observations[:num_max]
+    if page.status_code == 404:
+        raise ValueError("Not found")
 
-    print(f"Número de elementos: {len(observations)}")
+    elif page.status_code == 200:
+        if type(page.json()) is dict:
+            observations.extend(_build_observations([page.json()]))
+        
+        else:
+            while len(page.json()) == 200:
+                observations.extend(_build_observations(page.json()))
+                n += 1
+                if n > 99:
+                    print("WARNING: Only the first 20,000 results are displayed")
+                    break
+                if num_max is not None and len(observations) >= num_max:
+                    break
+                url = f"{arg_url}&page={n}"
+                page = requests.get(url, verify=False)
+                print(f"Número de elementos: {len(observations)}")
+                
+            observations.extend(_build_observations(page.json()))
+            
+            if num_max:
+                observations = observations[:num_max]
+
+        print(f"Número de elementos: {len(observations)}")
     return observations
 
 # Función para extraer las observaciones y que admite distintos filtros
@@ -251,6 +256,7 @@ def get_count_by_taxon() -> Dict:
 def get_dfs(observations) -> pd.DataFrame:
     df = pd.DataFrame([obs.dict() for obs in observations])
     df2 = df.drop(['photos'], axis=1)
+    df["taxon_id"] = df["taxon_id"].astype("Int64", errors="ignore") 
 
     df_observations = flat_table.normalize(df2).drop(['index'], axis=1)
     df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date()).astype('datetime64[ns]')

@@ -632,4 +632,3 @@ def test_get_dfs_extrae_dfs(requests_mock,) -> None:
     
     #assert result_photo == expected_result_photo
 
-    # def test_download_photos
