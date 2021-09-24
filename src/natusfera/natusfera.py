@@ -256,7 +256,6 @@ def get_dfs(observations) -> pd.DataFrame:
     df_observations['created_at'] = df_observations['created_at'].apply(lambda x: x.date()).astype('datetime64[ns]')
     df_observations['updated_at'] = df_observations['updated_at'].apply(lambda x: x.date()).astype('datetime64[ns]')
     df_observations['observed_on'] = df_observations['observed_on'].astype('datetime64[ns]')
-    df_observations = df_observations[[]]
 
     df_photos = flat_table.normalize(df[['id', 'photos', 'iconic_taxon', 'taxon_id', 'taxon_name', 'taxon_ancestry', 'user_login', 'latitude', 'longitude']]).drop(['index'], axis=1)
     df_photos = df_photos[['id', 'photos.id', 'iconic_taxon', 'taxon_name', 'photos.medium_url', 'user_login', 'latitude', 'longitude']]
