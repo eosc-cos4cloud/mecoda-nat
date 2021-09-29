@@ -10,7 +10,7 @@ import pandas as pd
 import flat_table
 import os
 import shutil
-
+import re
 urllib3.disable_warnings()
 
 # Definición de variables
@@ -208,6 +208,10 @@ def get_obs(
     ) -> List[Observation]:
 
     print("Generando lista de observaciones:")
+
+    # procesamos el string del nombre del proyecto
+    project_name = re.sub(r"^\s+|\s+$", "", project_name)
+    project_name = re.sub(r"\s", "-", project_name)
 
     if place_name is not None:
         place_ids = _get_ids_from_place(place_name)
