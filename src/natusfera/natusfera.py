@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from Orange.data.variable import Value
 from .models import Project, Observation, TAXONS, ICONIC_TAXON, Photo
 from typing import List, Dict, Any, Union, Optional
 import requests
@@ -210,8 +209,9 @@ def get_obs(
     print("Generando lista de observaciones:")
 
     # procesamos el string del nombre del proyecto
-    project_name = re.sub(r"^\s+|\s+$", "", project_name)
-    project_name = re.sub(r"\s", "-", project_name)
+    if project_name is not None:
+        project_name = re.sub(r"^\s+|\s+$", "", project_name)
+        project_name = re.sub(r"\s", "-", project_name)
 
     if place_name is not None:
         place_ids = _get_ids_from_place(place_name)
