@@ -11,7 +11,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="natusfera",
-    version="0.4.6",
+    version="0.4.7",
     description="Librería para extraer información recogida en la API Natusfera.",
     author="Ana Alvarez",
     author_email="anomalia@disroot.org",
