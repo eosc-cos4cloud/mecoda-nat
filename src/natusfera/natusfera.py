@@ -3,13 +3,14 @@ from .models import Project, Observation, TAXONS, ICONIC_TAXON, Photo
 from typing import List, Dict, Any, Union, Optional
 import requests
 from contextlib import suppress
-#from pydantic import ValidationError
 import urllib3
 import pandas as pd
 import flat_table
 import os
 import shutil
 import re
+import numpy as np
+
 urllib3.disable_warnings()
 
 # Definición de variables
@@ -107,7 +108,7 @@ def _build_observations(observations_data: List[Dict[str, Any]]) -> List[Observa
     observations = []
     
     for data in observations_data:
-        
+
         with suppress(KeyError):
             if data['place_guess'] is not None:
                 data['place_name'] = data['place_guess'].replace("\r\n", ' ').strip()
@@ -274,8 +275,35 @@ def get_dfs(observations) -> pd.DataFrame:
     
     return df_observations, df_photos
 
+def extra_info(df_observations) -> pd.DataFrame:
+    ids = df_observations['id'].to_list()
+    dic = {}
+
+    for id_num in ids:
+        url = f'https://natusfera.gbif.es/observations/{id_num}.json'
+        page = requests.get(url, verify=False)
+
+        idents = page.json()['identifications']
+        if len(idents) > 0:
+            user_identification = idents[0]['user']['login']
+            first_taxon_name = idents[0]['taxon']['name']
+            last_taxon_name = idents[len(idents) - 1]['taxon']['name']
+            dic[id_num] = [user_identification, first_taxon_name, last_taxon_name]
+        else:
+            dic[id_num] = [0, 0, 0]
+
+    df_observations['first_identification'] = df_observations['id'].apply(lambda x: str(dic[x][0]))
+    df_observations['first_taxon_name'] = df_observations['id'].apply(lambda x: str(dic[x][1]))
+    df_observations['last_taxon_name'] = df_observations['id'].apply(lambda x: str(dic[x][2]))
+
+    df_observations['first_taxon_match'] = np.where(df_observations['first_taxon_name'] == df_observations['last_taxon_name'], 'True', 'False')
+    df_observations['first_identification_match'] = np.where(df_observations['first_identification'] == df_observations['user_login'], 'True', 'False')
+
+    return df_observations
+
+
 # Función para descargar las fotos resultado de la consulta
-def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "/home/anomalia/projects/Orange/natusfera_photos"):
+def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "/natusfera_photos"):
     
     # Crea la carpeta, si existe la sobreescribre
     if os.path.exists(directorio):

@@ -85,6 +85,8 @@ class Observation(BaseModel):
     photos: List[Photo] = []
     num_identification_agreements: Optional[int] = None
     num_identification_disagreements: Optional[int] = None
+    identifications_count: Optional[int] = None
+    id_please: Optional[bool] = None
 
 
 
