@@ -37,5 +37,5 @@ setup(
         "Topic :: Utilities",
         "Natural Language :: English",
     ],
-    install_requires=["pydantic", "requests"],
+    install_requires=["pydantic", "requests", "pandas", "flat-table", ],
 )
