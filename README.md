@@ -6,7 +6,7 @@ Library to extract information collected in the Natusfera API. This library is p
 # Instalation
 
 ```bash
-pip install mecoda-nat
+pip install mecoda_nat
 ```
 
 # Use
@@ -32,7 +32,7 @@ For the `taxon` argument the possible values are:
 Example of use:
 
 ```python
-from mecoda-nat import get_obs
+from mecoda_nat import get_obs
 
 observations = get_obs(year=2018, taxon='fungi')
 
@@ -47,7 +47,7 @@ With `get_project` you can get the information of the projects collected in the 
 Example of use:
 
 ```python
-from mecoda-nat import get_project
+from mecoda_nat import get_project
 
 projects = get_project("urbamar")
 
@@ -62,7 +62,7 @@ With `get_count_by_taxon` we can know the number of observations that correspond
 Example of use:
 
 ```python
-from mecoda-nat import get_count_by_taxon
+from mecoda_nat import get_count_by_taxon
 
 count = get_count_by_taxon()
 
@@ -144,8 +144,8 @@ To contribute to this library, follow the steps below.
 * Clone your fork and enter the directory
 
     ```bash
-    git clone git@github.com:<your_username>/mecoda-nat.git
-    cd mecoda-nat
+    git clone git@github.com:<your_username>/mecoda_nat.git
+    cd mecoda_nat
     ```
 * Configure your virtualenv to run the tests:
     ```bash
@@ -153,7 +153,7 @@ To contribute to this library, follow the steps below.
     source env/bin/activate
     ```
 
-* Install `mecoda-nat` and its dependencies.
+* Install `mecoda_nat` and its dependencies.
     ```bash
     pip3 install -e .
     pip3 install -r requirements-dev.txt

@@ -3,7 +3,7 @@
 import datetime
 import pytest
 import pandas as pd
-from mecoda-nat import (
+from mecoda_nat import (
     get_project,
     get_obs,
     get_count_by_taxon,
