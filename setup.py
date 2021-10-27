@@ -10,9 +10,9 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="mecoda_nat",
-    version="0.5.0",
-    description="Librería para extraer información recogida en la API Natusfera.",
+    name="mecoda-nat",
+    version="0.5.2",
+    description="Library to download information collected in the Natusfera API.",
     author="Ana Alvarez",
     author_email="anomalia@disroot.org",
     license="GNU General Public License v3",
