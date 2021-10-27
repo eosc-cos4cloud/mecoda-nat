@@ -10,7 +10,7 @@ with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 setup(
-    name="natusfera",
+    name="mecoda-nat",
     version="0.4.7",
     description="Librería para extraer información recogida en la API Natusfera.",
     author="Ana Alvarez",
@@ -18,10 +18,10 @@ setup(
     license="GNU General Public License v3",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/pynomaly/natusfera",
+    url="https://github.com/pynomaly/mecoda-nat",
     packages=find_packages("src"),
     package_dir={"": "src"},
-    package_data={"natusfera": ["py.typed"]},
+    package_data={"mecoda-nat": ["py.typed"]},
     py_modules=[splitext(basename(path))[0] for path in glob("src/*.py")],
     python_requires=">=3.6",
     classifiers=[

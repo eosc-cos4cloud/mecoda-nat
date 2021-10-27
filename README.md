@@ -1,52 +1,51 @@
-![ ](docs/natusfera_banner_github_2.jpg)
+Library to extract information collected in the Natusfera API. This library is part of MECODA (ModulE for Citizen Observatory Data Analysis), aimed to facilitate analysis and viewing of citizen science data.
 
-Librería para extraer información recogida en la API Natusfera.
 
-# Instalación
+# Instalation
 
 ```bash
-pip install natusfera
+pip install mecoda-nat
 ```
 
-# Uso
+# Use
 
-## Obtener observaciones
+## Get observations
 
-Con `get_obs` se pueden extraer datos de las observaciones recogidas en la API. La función admite combinaciones de estos argumentos, que actúan como filtros, obteniendo las observaciones en orden descendente de id, con un máximo de 20.000 (limitación de la API):
+With `get_obs` you can extract data from the observations collected in the API. The function supports combinations of these arguments, which act as filters, getting the observations in descending order of id, with a maximum of 20,000 (API limitation): 
 
-| Argumento | Descripción | Ejemplo |
+| Argument | Descrition | Example |
 | --------- | ----------- | ------- |
-| `query` | Palabra o frase encontrada en los datos de una observación | `query="quercus quercus"` |
-| `id_project` | Número de identificación de un proyecto | `id_project=806` |
-| `id_obs` | Número de identificación de una observación en concreto | `id_obs=425` |
-| `user` | Nombre de usuaria que ha subido las observaciones | `user="zolople"` |
-| `taxon` | Una de las taxonomías principales | `taxon="fungi"` |
-| `place_id` | Número de identificación de un lugar | `place_id=1011` |
-| `place_name` | Nombre de un lugar | `place_name="Barcelona"` |
-| `year` | Año de las observaciones | `year=2019` |
+| `query` | Word or phrase found in the data of an observation | `query="quercus quercus"` |
+| `id_project` | Identification number of a project | `id_project=806` |
+| `id_obs` | Identification number of a specific observation | `id_obs=425` |
+| `user` | Name of user who has uploaded the observations | `user="zolople"` |
+| `taxon` | One of the main taxonomies | `taxon="fungi"` |
+| `place_id` | Identification number of a place | `place_id=1011` |
+| `place_name` | Name of a place | `place_name="Barcelona"` |
+| `year` | Year of observations | `year=2019` |
 
-Para el argumento `taxon` los valores posibles son:
+For the `taxon` argument the possible values are: 
 `chromista`, `protozoa`, `animalia`, `mollusca`, `arachnida`, `insecta`, `aves`, `mammalia`, `amphibia`, `reptilia`, `actinopterygii`, `fungi`, `plantae` y `unknown`.
 
-Ejemplo de uso:
+Example of use:
 
 ```python
-from natusfera import get_obs
+from mecoda-nat import get_obs
 
-observaciones = get_obs(year=2018, taxon='fungi')
+observations = get_obs(year=2018, taxon='fungi')
 
 ```
-`observaciones` es una lista de objetos [`Observation`](#observation).
+`observations` is an object list [`Observation`](#observation).
 
 
-## Obtener proyectos
+## Get projects
 
-Con `get_project` se puede obtener la información de los proyectos recogidos en la API. La función admite un solo argumento, que puede ser el número de identificación del proyecto o el nombre del proyecto. En caso de que el nombre no se corresponda exclusivamente con un proyecto, devuelve la información de la lista de proyectos que incluyen dicha palabra.
+With `get_project` you can get the information of the projects collected in the API. The function supports a single argument, which can be the project identification number or the name of the project. In case the name does not correspond exclusively to a project, it returns the information from the list of projects that include that word. 
 
-Ejemplo de uso:
+Example of use:
 
 ```python
-from natusfera import get_project
+from mecoda-nat import get_project
 
 projects = get_project("urbamar")
 
@@ -54,182 +53,180 @@ projects = get_project("urbamar")
 `projects` es siempre una lista de objetos [`Project`](#project).
 
 
-## Obtener recuento de observaciones por familia taxonómica
+## Get count of observations by taxonomic family
 
-Con `get_count_by_taxon` podemos conocer el número de observaciones que se corresponden a cada una de las familias taxonómicas. La función no admite ningún argumento.
+With `get_count_by_taxon` we can know the number of observations that correspond to each of the taxonomic families. The function does not take any argument. 
 
-Ejemplo de uso:
+Example of use:
 
 ```python
-from natusfera import get_count_by_taxon
+from mecoda-nat import get_count_by_taxon
 
 count = get_count_by_taxon()
 
 ```
-`count` es un diccionario con la estructura taxonomía: número de observaciones
+`count` is a dictionary with the structure {`taxonomy`: `number of observations`}
 
+# Models
 
-# Modelos
-
-Los modelos están definidos usando objetos de [Pydantic](https://pydantic-docs.helpmanual.io/). Se hace validación de los tipos de todos los atributos y se pueden extraer los datos con el método `dict` o `json`.
-
+The models are defined using objects from [Pydantic] (https://pydantic-docs.helpmanual.io/). Type validation of all attributes is done and data can be extracted with the `dict` or` json` method. 
 
 ## Observation
 
-El objeto `Observation` contiene la información de cada una de las observaciones registradas en [Natusfera](https://natusfera.gbif.es/observations) y tiene los siguientes atributos:
+The object `Observation` contains the information of each of the observations registered in [Natusfera] (https://natusfera.gbif.es/observations) and has the following attributes:
 
-| Atributo | Tipo | Description | Valor por defecto |
+| Attribute | Type | Description | Default value |
 | -------- | ---- | ----------- | ----------------- |
-| `id` | `int` | Número de la observación |  |
-| `captive` | `Optional[bool]` | Estado de cautividad | `None` |
-| `created_at` | `Optional[datetime]` | Fecha de creación | `None` |
-| `updated_at` | `Optional[datetime]` | Fecha de actualización | `None` |
-| `observed_on` | `Optional[date]` | Fecha de la observación | `None` |
-| `description` | `Optional[str]` | Descripción de la observación | `None` |
-| `iconic_taxon` | `Optional[IconicTaxon]` | Famlia taxonómíca | `None` |
-| `taxon_id` | `Optional[int]` | Número de identificación de la taxonomía concreta | `None` |
-| `taxon_name` | `Optional[str]` | Nombre de la especie observada | `None` |
-| `taxon_ancestry` | `Optional[str]` | Cadena de la secuncia taxonómica a la que corresponde la observación, con identificadores separados por `/` | `None` |
-| `latitude` | `Optional[float]` | Latitud | `None` |
-| `longitude` | `Optional[float]` | Longitud | `None` |
-| `place_name` | `Optional[str]` | Nombre del lugar de la observación | `None` |
-| `quality_grade` | `Optional[QualityGrade]` | Grado de calidad: `basico` o `investigacion` |`None` |
-| `user_id` | `Optional[int]` | Número de identificación de la usuaria | `None` |
-| `user_login` | `Optional[str]` | Nombre de registro de la usuaria | `None` |
-| `photos` | `List[Photo]` | Lista de objetos [`Photo`](#photo), que incluyen información de cada fotografía de la observación | `[]` |
-| `num_identification_agreements` | `Optional[int]` | Número de votos favorables a la identificación | `None` |
-| `num_identification_disagreements` | `Optional[int]` | Número de votos favorables a la identificación | `None` |
+| `id` | `int` | Observation number |  |
+| `captive` | `Optional[bool]` | State of captivity | `None` |
+| `created_at` | `Optional[datetime]` | Creation date | `None` |
+| `updated_at` | `Optional[datetime]` | Update date | `None` |
+| `observed_on` | `Optional[date]` | Observation date | `None` |
+| `description` | `Optional[str]` | Observation description | `None` |
+| `iconic_taxon` | `Optional[IconicTaxon]` | Taxonomic family | `None` |
+| `taxon_id` | `Optional[int]` | Identification number of the specific taxonomy | `None` |
+| `taxon_name` | `Optional[str]` | Name of the species observed | `None` |
+| `taxon_ancestry` | `Optional[str]` | String of the taxonomic sequence to which the observation corresponds, with identifiers separated by `/` | `None` |
+| `latitude` | `Optional[float]` | Latitude | `None` |
+| `longitude` | `Optional[float]` | Longitude | `None` |
+| `place_name` | `Optional[str]` | Observation site name | `None` |
+| `quality_grade` | `Optional[QualityGrade]` | Quality grade: `basico` o `investigacion` |`None` |
+| `user_id` | `Optional[int]` | User identification number | `None` |
+| `user_login` | `Optional[str]` | User registration name | `None` |
+| `photos` | `List[Photo]` | Object lists [`Photo`](#photo), that include information about each photograph of the observation | `[]` |
+| `num_identification_agreements` | `Optional[int]` | Number of votes in favor of identification | `None` |
+| `num_identification_disagreements` | `Optional[int]` | Number of unfavorable votes to identification | `None` |
 
 
 ## Project
 
-El objeto `Project` contiene la información de cada uno de los proyectos registrados en [Natusfera](https://natusfera.gbif.es/observations) y tiene los siguientes atributos:
+The `Project` object contains the information of each of the projects registered in [Natusfera] (https://natusfera.gbif.es/observations) and has the following attributes:
 
-| Atributo | Tipo | Description | Valor por defecto |
+| Attribute | Type | Description | Default value |
 | -------- | ---- | ----------- | ----------------- |
-| `id` | `int` | Número de identificación del proyecto |  |
-| `title` | `str` | Título del proyecto |  |
-| `description` | `Optional[str]` | Descripción del proyecto | `None` |
-| `created_at` | `Optional[datetime]` | Fecha de creación del proyecto | `None` |
-| `updated_at` | `Optional[datetime]` | Fecha de actualización del proyecto |`None` |
-| `latitude` | `Optional[float]` | Latitud |`None` |
-| `longitude` | `Optional[float]` | Longitud |`None` |
-| `place_id` | `Optional[int]` | Número de identificación del lugar | `None` |
-| `parent_id` | `Optional[int]` | Número de identificación del proyecto en el que se engloba |`None` |
-| `children_id` | `List[int]` | Números de identificación de los proyectos que tiene dentro | `[]` |
-| `user_id` | `Optional[int]` | Número de identificación de la usuaria que lo crea | `None` |
-| `icon_url` | `Optional[str]` | Enlace al icono del proyecto | `None` |
-| `observed_taxa_count` | `Optional[int]` | Número de observaciones que incluye el proyecto | `None` |
+| `id` | `int` | Project identification number |  |
+| `title` | `str` | Title of the project |  |
+| `description` | `Optional[str]` | Project description | `None` |
+| `created_at` | `Optional[datetime]` | Project creation date | `None` |
+| `updated_at` | `Optional[datetime]` | Project update date |`None` |
+| `latitude` | `Optional[float]` | Latitude |`None` |
+| `longitude` | `Optional[float]` | Longitude |`None` |
+| `place_id` | `Optional[int]` | Place identification number | `None` |
+| `parent_id` | `Optional[int]` | Identification number of the project in which it is included |`None` |
+| `children_id` | `List[int]` | Identification numbers of the projects it has inside | `[]` |
+| `user_id` | `Optional[int]` | Identification number of the user who creates it | `None` |
+| `icon_url` | `Optional[str]` | Link to project icon | `None` |
+| `observed_taxa_count` | `Optional[int]` | Number of observations included in the project | `None` |
 
 
 ## Photo
 
-El objeto `Photo` contiene la información de cada fotografía vinculada a una observación y tiene los siguientes atributos.
+The `Photo` object contains the information of each photography linked to an observation and has the following attributes.
 
-| Atributo | Tipo | Description | Valor por defecto |
+| Attribute | Type | Description | Default value |
 | -------- | ---- | ----------- | ----------------- |
-| `id` | `int` | Número de identificación de la fotografía |   |
-| `large_url` | `str` | Enlace a la fotografía en formato grande |   |
-| `medium_url` | `str` | Enlace a la fotografía en formato mediano |   |
-| `small_url` | `str` | Enlace a la fotografía en formato pequeño |   |
+| `id` | `int` | Photo identification number |   |
+| `large_url` | `str` | Link to large format photo |   |
+| `medium_url` | `str` | Link to the photograph in medium format |   |
+| `small_url` | `str` | Link to the photo in small format |   |
 
 
-# Contribuciones
+# Contributions
 
-Para contribuir a esta librería, sigue los siguientes pasos.
+To contribute to this library, follow the steps below.
 
-* Necesitas tener instalado Python 3.7 o superior, virtualenv y git.
+* You need to have Python 3.7 or higher, virtualenv and git installed.
 
-* Crea un fork en github de este proyecto.
+* Create a github fork of this project.
 
-* Clona tu fork y entra en el directorio
+* Clone your fork and enter the directory
 
     ```bash
-    git clone git@github.com:<tu nombre de usuaria>/natusfera.git
-    cd natusfera
+    git clone git@github.com:<your_username>/mecoda-nat.git
+    cd mecoda-nat
     ```
-* Configura tu virtualenv para correr los tests:
+* Configure your virtualenv to run the tests:
     ```bash
     virtualenv -p `which python3.7` env
     source env/bin/activate
     ```
 
-* Instala `natusfera` y sus dependencias.
+* Install `mecoda-nat` and its dependencies.
     ```bash
     pip3 install -e .
     pip3 install -r requirements-dev.txt
     ```
 
-* Crea una nueva rama y haz tus cambios:
+* Create a new branch and make your changes:
     ```bash
     git checkout -b mi-nueva-rama
     ```
 
-* Corre los tests con:
+* Run the tests with:
     ```bash
     python -m pytest --cov-report term-missing --cov src tests
     ```
 
-    Si necesitas pasar un test en concreto, puedes usar `pytest -k <nombre-del-test>`.
+    If you need to pass a specific test, you can use `pytest -k <test-name>`.
 
-* Actualiza la documentación.
+* Update the documentation.
 
-* Haz commit, push y crea tu pull request.
+* Make commit, push and create your pull request.
 
 
-## Subir una nueva versión
+## Upload a new version
 
-* Cambiar a master y actualizar:
+* Switch to master and update:
     ```bash
     git checkout master
     git pull
     ```
 
-* Crear una nueva rama:
+* Create a new branch:
     ```bash
-    git checkout -b <nombre-de-la-rama>
+    git checkout -b <branch-name>
     git pull
     ```
-* Hacer los cambios en el código
+* Make changes to the code
 
-* Correr los tests:
+* Run the tests:
     ```bash
     python -m pytest --cov-report term-missing --cov src tests
     ```
 
-* Editar el archivo `setup.py` para subir la versión, que significa cambiar el argumento `version` en la función `setup`. La convención es 0.1.0 == major.minor.patch. `major` es introducir cambios que rompen el código existente. `minor` se refiere a cambios que agregan funcionalidad pero no rompen código existente. `patch` se refiere a cambios que arreglan errores pero no añaden funcionalidad.
+* Edit the `setup.py` file to upload the version, which means changing the` version` argument in the `setup` function. The convention is 0.1.0 == major.minor.patch. `major` is to introduce changes that break the existing code. `minor` refers to changes that add functionality but do not break existing code. `patch` refers to changes that fix bugs but do not add functionality.
 
-* Hacer commit y push:
+* Make commit and push:
     ```bash
     git add .
-    git commit -m "<comentario>"
-    git push --set-upstream origin <nombre-de-la-rama>
+    git commit -m "<comment>"
+    git push --set-upstream origin <branch-name>
     ```
 
-* Seguir el link a github devuelto por el push y mergear.
+* Follow the link to github returned by the push and merge.
 
-* Actualizar master:
+* Update master:
     ```bash
     git checkout master
     git pull
     ```
 
-* Crear tag con la nueva versión:
+* Create tag with the new version:
     ```bash
-    git tag <nueva-version>
+    git tag <new-version>
     git push --tags
     ```
 
-* Construir el paquete:
+* Build the package:
     ```bash
     rm dist/ build/ -r
     python setup.py -q bdist_wheel
     python setup.py -q sdist
     ```
 
-* Subir paquete a pypi:
+* Upload package to pypi:
     ```bash
     twine upload -r pypi dist/*
     ```
 
-¡Gracias por contribuir a este proyecto!
+Thanks for contributing to this project!
