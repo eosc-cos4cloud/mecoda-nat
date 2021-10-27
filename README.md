@@ -1,3 +1,5 @@
+![](docs/logo-cos4cloud-middle.png)
+
 Library to extract information collected in the Natusfera API. This library is part of MECODA (ModulE for Citizen Observatory Data Analysis), aimed to facilitate analysis and viewing of citizen science data.
 
 
