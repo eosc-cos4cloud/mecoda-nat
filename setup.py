@@ -18,7 +18,7 @@ setup(
     license="GNU General Public License v3",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://github.com/pynomaly/mecoda_nat",
+    url="https://github.com/pynomaly/mecoda-nat",
     packages=find_packages("src"),
     package_dir={"": "src"},
     package_data={"mecoda_nat": ["py.typed"]},
