@@ -18,6 +18,7 @@ With `get_obs` you can extract data from the observations collected in the API. 
 | Argument | Descrition | Example |
 | --------- | ----------- | ------- |
 | `query` | Word or phrase found in the data of an observation | `query="quercus quercus"` |
+| `project_name` | Name of a project | `project_name="urbamar"` |
 | `id_project` | Identification number of a project | `id_project=806` |
 | `id_obs` | Identification number of a specific observation | `id_obs=425` |
 | `user` | Name of user who has uploaded the observations | `user="zolople"` |
