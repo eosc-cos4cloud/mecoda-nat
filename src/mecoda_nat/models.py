@@ -81,7 +81,6 @@ class Observation(BaseModel):
     quality_grade: Optional[str] = None 
     user_id: Optional[int] = None
     user_login: Optional[str] = None
-    #project_ids: List[int] = []
     photos: List[Photo] = []
     num_identification_agreements: Optional[int] = None
     num_identification_disagreements: Optional[int] = None

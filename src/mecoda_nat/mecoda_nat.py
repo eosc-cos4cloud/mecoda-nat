@@ -303,7 +303,7 @@ def extra_info(df_observations) -> pd.DataFrame:
 
 
 # Función para descargar las fotos resultado de la consulta
-def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "/natusfera_photos"):
+def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "./natusfera_photos"):
     
     # Crea la carpeta, si existe la sobreescribre
     if os.path.exists(directorio):
@@ -318,4 +318,5 @@ def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "/natus
             with open(f"{directorio}/{row['path'][n]}", 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
         del response
+        
     df_photos['path'] = df_photos['path'].apply(lambda x: os.path.abspath(f"{directorio}/{x}"))
