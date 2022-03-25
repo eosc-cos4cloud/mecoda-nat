@@ -11,7 +11,7 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="mecoda-nat",
-    version="0.5.6",
+    version="0.5.7",
     description="Library to download information collected in Natusfera API.",
     author="Ana Alvarez",
     author_email="anomalia@disroot.org",
