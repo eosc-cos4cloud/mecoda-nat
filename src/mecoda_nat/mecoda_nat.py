@@ -315,7 +315,7 @@ def download_photos(df_photos: pd.DataFrame, directorio: Optional[str] = "natusf
         row = df_photos.iloc[[n]]
         response = requests.get(row['photos.medium_url'].item(), verify=False, stream=True)
         if response.status_code == 200:
-            with open(f"{directorio}/{row['path'][n]}", 'wb') as out_file:
+            with open(f"{directorio}/{row['path'].item()}", 'wb') as out_file:
                 shutil.copyfileobj(response.raw, out_file)
         del response
     
