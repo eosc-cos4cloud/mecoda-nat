@@ -11,10 +11,10 @@ with open("README.md", "r") as readme_file:
 
 setup(
     name="mecoda-nat",
-    version="0.5.8",
+    version="0.6.0",
     description="Library to download information collected in Natusfera API.",
     author="Ana Alvarez",
-    author_email="anomalia@disroot.org",
+    author_email="ana.alvarez@icm.csic.es",
     license="GNU General Public License v3",
     long_description=readme,
     long_description_content_type="text/markdown",

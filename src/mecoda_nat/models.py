@@ -77,7 +77,6 @@ class Observation(BaseModel):
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     place_name: Optional[str] = None
-    place_id: Optional[int] = None
     quality_grade: Optional[str] = None 
     user_id: Optional[int] = None
     user_login: Optional[str] = None
